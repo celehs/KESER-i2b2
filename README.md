@@ -47,7 +47,7 @@ take 26-30 mins to run.
 For the file paths, change it base on your file locations.
 
 ``` r
-library(keser-i2b2)
+library(keser.i2b2)
 CO_file <- "dungeon//data//rpdr_code_cooccurrence_victor_2019.csv"  # Co-occurrence File: .csv/.parquet/.Rdata
 HAM_file <- "dungeon//data//MultiAxialHierarchy.csv"                # Multi-axial Hierarchy File: .csv/.parquet/.Rdata  
 ARP_file <- "dungeon//data//AllRelationPairsWithNull.Rdata"         # All Relation Pairs File: .csv/.parquet/.Rdata  
