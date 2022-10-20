@@ -75,6 +75,25 @@ get_report(summary, plot_val = "auc", knit_format = "html")
 `out_dir` folder. If `out_dir` is `NULL` then it will create a folder
 called **output** in your working directly.
 
+#### Retrieve Embedding
+
+Let’s say you picked the best `dim` from the plots, and the value is
+**200**. the way the retrieve it is:
+
+``` r
+my_embed <- summary[["summary"]][["200"]][["embedding"]]
+View(my_embed)
+```
+
+#### Retrieve Evaluation Table
+
+For the same case above, the way to retrieved evaluation table is:
+
+``` r
+my_eval <- summary[["summary"]][["200"]][["evaluation"]]
+View(my_eval)
+```
+
 #### Check Results
 
 The evaluation plots are saved as “Summary-XX-YY-ZZ.html”, and the
