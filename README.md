@@ -103,3 +103,6 @@ stands for Step.
 
 You can choose a proper dimension and use the corresponding embedding
 for the next steps.
+
+See the [Documentation](https://celehs.github.io/KESER-i2b2/) to learn
+more.
