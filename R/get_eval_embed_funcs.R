@@ -10,11 +10,13 @@ library(arrow)
 
 # Functions To Obtain SPPMI from cooc
 #########################################################################
-
-## find two level LP codes for LOINC codes ####
-# CO(codelist) is a triple data.frame, colnames are V1, V2, V3
-## V1 shows the row id (code id), V2 shows the col id (code id), 
-## and V3 shows the counts for certain pair
+#' find two level LP codes for LOINC codes
+#' 
+#' CO(codelist) is a triple data.frame, colnames are V1, V2, V3
+#' 
+#' @param V1 Shows the row id (code id).
+#' @param V2 Shows the col id (code id).
+#' @param V3 Shows the counts for certain pair.
 get_rollup_dict = function(codelist, MAH){
   # codelist is a vector including LOINC codes
   # MAH is a data.frame loaded from a csv called MultiAxialHierarchy.csv
@@ -42,7 +44,7 @@ get_rollup_dict = function(codelist, MAH){
 }
 
 
-## roll up data ####
+#' roll up data
 find_rollup = function(x, rolluplist){
   i = which(rolluplist[,1]==x)
   if(length(i) == 0){
@@ -53,6 +55,7 @@ find_rollup = function(x, rolluplist){
   }
 }
 
+#' roll up data 2
 find_rollup2 = function(x, rolluplist){
   i = which(rolluplist[,2]==x)
   if(length(i) == 0){
@@ -67,8 +70,10 @@ find_rollup2 = function(x, rolluplist){
   }
 }
 
-# let the "first col (V1) id" < "second col (V2) id"
-# and add the row with same V1 and V2
+#' Arrange codes
+#' 
+#' let the "first col (V1) id" < "second col (V2) id"
+#' and add the row with same V1 and V2
 code_arrange = function(data){
   name_list = union(data$V1[!duplicated(data$V1)],
                     data$V2[!duplicated(data$V2)])
@@ -83,6 +88,7 @@ code_arrange = function(data){
   return(data_arrange)
 }
 
+#' Split codes
 code_split = function(data){
   a = sapply(data$V1, function(s){
     x = strsplit(s,":")[[1]]
@@ -103,6 +109,7 @@ code_split = function(data){
   return(data)
 }
 
+#' Roll-up codes
 code_rollup = function(data,rolluplist,viewproc=TRUE){
   idx1 = which(data$V4 == "LOINC")
   idx2 = which(data$V6 == "LOINC")
@@ -150,15 +157,7 @@ code_rollup = function(data,rolluplist,viewproc=TRUE){
   return(data_rollup)
 }
 
-
-# if you want to roll up LOINC codes to LP codes in cooc matrix,
-## @para:data is a triple form of cooc, 
-## which includes three columns, first two columns represent the code pair (character),
-## and the third column represent the counts for certain pair (numerical)
-## Codes To Run
-# CO_rollup = roll_up(CO, code_LPcode)
-##code_LPcode is the data.frame obtained from the previous section with codes:
-# code_LPcode = get_rollup_dict(unique(c(data$V1, data$V2)))
+#' Roll-up data
 roll_up = function(data,rolluplist,viewproc=TRUE){
   # viewproc: this function takes a long time, use viewproc=TRUE to view where it is
   #data = code_arrange(data)
@@ -179,16 +178,13 @@ roll_up = function(data,rolluplist,viewproc=TRUE){
 
 
 
-## get SPPMI matrix ####
-# use this function to obtain SPPMI matrix from cooc matrix in triple form
-## @para:cooc should be a triple form of cooc, 
-## which includes three columns, first two columns represent the code pair (character),
-## and the third column represent the counts for certain pair (numerical).
-## @para:dict is a data.frame,
-## which including a variables names 'feature_id' - the code you want to included.
-## for example, dict = data.frame(feature_id = unique(c(CO$V1, CO$V2)))
-##code_LPcode is the data.frame obtained from the previous section with codes:
-# code_LPcode = get_rollup_dict(unique(c(data$V1, data$V2)))
+#' get SPPMI matrix
+#' 
+#' use this function to obtain SPPMI matrix from cooc matrix in triple form.
+#' 
+#' @param cooc Should be a triple form of cooc.
+#' @param dict A data.frame.
+#' @param code_LPcode The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}
 getSPPMI = function(cooc, dict, code_LPcode){
   colnames(cooc) = c("feature1","feature2","ct_A")
   id = which(cooc$feature1%in%dict$feature_id & cooc$feature2%in%dict$feature_id)
@@ -239,9 +235,9 @@ getSPPMI = function(cooc, dict, code_LPcode){
 }
 
 
-## get embedding from SPPMI matrix ####
-# @para:SPPMI is the SPPMI matrix obtained from the previous section.
-# @para:d is a numerical shows the target dimension of embedding.
+#' get embedding from SPPMI matrix
+#' @param SPPMI The SPPMI matrix obtained from the previous section.
+#' @param d A numerical shows the target dimension of embedding.
 getembedding = function(SPPMI, d = 1500){
   a = which(apply(SPPMI,1,sum)!=0)
   SPPMI = SPPMI[a,a]
@@ -259,14 +255,13 @@ getembedding = function(SPPMI, d = 1500){
 
 
 
-# Embed Generation Evaluation
+# Embed Generation Evaluation (by AUC)
 #########################################################################
-# Evaluate embedding by AUC ####
-## here are functions ####
+#' Getting embedding from svd
+#' 
+#' @param mysvd The svd result.
+#' @param d Dimension of the final embedding.
 get_embed = function(mysvd, d=2000, normalize=TRUE){
-  # this is the function for getting embedding from svd
-  # d: dim of the final embedding
-  # mysvd: the svd result 
   id = which(sign(mysvd$u[1,])==sign(mysvd$v[1,]))
   id = id[1:min(d,length(id))]
   embed = mysvd$u[,id]%*%diag(sqrt(mysvd$d[id]))
@@ -349,18 +344,28 @@ get_type = function(AllRelationPairs){
   return(list(type = tn[,1], name = tn[,2]))
 }
 
+#' Evaluate the embedding (codi & CUI)
+#' 
+#' @param embed Embedding, should be normed, rownames are code names.
+#' @param AllRelationPairs Construct from get_relation_dict.R.
+#' @param evatype Can be "train", "test", all the other character would be ignored.
+#' @param prop There are 3 scenarios:
+#' \itemize{
+#' \item{If \code{evatype="train"}, choose first \code{(prop * 100)}% pairs as training pairs.}
+#' \item{If \code{evatype="test"}, choose last \code{(prop * 100)}% pairs as test pairs.}
+#' \item{Otherwise, using all pairs to evaluate the embedding.}
+#' }
+#' 
+#' @details
+#' 
+#' \itemize{
+#' \item{\code{wei_auc}: The weighted auc of similar pairs, related pairs and CUI-CUI pairs.}
+#' \item{\code{wei_auc}: The The auc of all subtype pairs.}
+#' \item{\code{wei_auc}: The full information of subtype pairs, including cut, TPR, etc...}
+#' }
+#' 
+#' @return A list.
 Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
-  # evaluate the embedding
-  # @param AllRelationPairs: construct from get_relation_dict.R.
-  # @param embed: embedding, should be normed, rownames are code names.
-  # @param evatype: can be "train", "test", all the other character would be ignored.
-  # @param prop: if evatype="train", choose first (prop*100)% pairs as training pairs.
-  ##             if evatype="test", choose last (prop*100)% pairs as test pairs.
-  ##             otherwise, using all pairs to evaluate the embedding.
-  # @return a list:
-  ## wei_auc: the weighted auc of similar pairs, related pairs and CUI-CUI pairs;
-  ## anstable: the auc of all subtype pairs;
-  ## fulltable: the full information of subtype pairs, including cut, TPR, etc..
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
     AllRelationPairs = lapply(AllRelationPairs, function(x){
@@ -405,18 +410,10 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
               fulltable = as.data.frame(fulltable)))
 }
 
+#' Evaluate the embedding (codi & CUI)
+#' 
+#' Similar to function \code{Evaluate}, but just for codi pairs evaluation.
 Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
-  # evaluate the embedding
-  # @param AllRelationPairs: construct from get_relation_dict.R.
-  # @param embed: embedding, should be normed, rownames are code names.
-  # @param evatype: can be "train", "test", all the other character would be ignored.
-  # @param prop: if evatype="train", choose first (prop*100)% pairs as training pairs.
-  ##             if evatype="test", choose last (prop*100)% pairs as test pairs.
-  ##             otherwise, using all pairs to evaluate the embedding.
-  # @return a list:
-  ## wei_auc: the weighted auc of similar pairs, related pairs and CUI-CUI pairs;
-  ## anstable: the auc of all subtype pairs;
-  ## fulltable: the full information of subtype pairs, including cut, TPR, etc..
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
     AllRelationPairs = lapply(AllRelationPairs, function(x){
@@ -453,7 +450,7 @@ Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
 # Functions To plot
 #########################################################################
 
-# function to get plot data
+#' Function to get plot data
 get_plot_data <- function(summary, col="auc", dim_name = "dims", labels = NULL) {
   l <- lapply(names(summary[["summary"]]), function(d) {
     summary[["summary"]][[d]][["evaluation"]][[col]]
@@ -472,7 +469,7 @@ get_plot_data <- function(summary, col="auc", dim_name = "dims", labels = NULL) 
   return(df)
 } 
 
-# function to split plot data by group
+#' Function to split plot data by group
 split_data <- function(plot_data, include.others = TRUE, dim_name = "dims",
                        patterns=list("Similarity" = "(sim)", "Relation" = "(rela)")) {
   
@@ -501,7 +498,7 @@ split_data <- function(plot_data, include.others = TRUE, dim_name = "dims",
   return(out)
 }
 
-# function to reshape plot data
+#' Function to reshape plot data
 reshape_data <- function(data, x = "dims", y = "vals", group = "pairs") {
   out <- data.frame()
   for (col in setdiff(colnames(data), x)) {
@@ -514,7 +511,7 @@ reshape_data <- function(data, x = "dims", y = "vals", group = "pairs") {
   return(out)
 }
 
-# function to plot scatter-line by group 
+#' Function to plot scatter-line by group 
 plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
   
   # rename column names
@@ -572,6 +569,9 @@ plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
 
 # Functions - Utility
 #########################################################################
+#' Functions to read data file
+#' 
+#' Data format can be .csv/.parquet/.Rdata.
 read_file <- function(file_name) {
   ext <- strsplit(tolower(file_name), split = "\\.")[[1]][-1]
   if (ext == "csv") return(readr::read_csv(file_name))
