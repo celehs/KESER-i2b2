@@ -12,11 +12,12 @@ library(arrow)
 #########################################################################
 #' find two level LP codes for LOINC codes
 #' 
-#' CO(codelist) is a triple data.frame, colnames are V1, V2, V3
-#' 
-#' @param V1 Shows the row id (code id).
-#' @param V2 Shows the col id (code id).
-#' @param V3 Shows the counts for certain pair.
+#' @param codelist is a triple data.frame, colnames are V1, V2, V3
+#' \itemize{
+#' \item{\code{V1: Shows the row id (code id).}}
+#' \item{\code{V2: Shows the col id (code id).}}
+#' \item{\code{V2: Shows the counts for certain pair.}}
+#' }
 get_rollup_dict = function(codelist, MAH){
   # codelist is a vector including LOINC codes
   # MAH is a data.frame loaded from a csv called MultiAxialHierarchy.csv
@@ -360,8 +361,8 @@ get_type = function(AllRelationPairs){
 #' 
 #' \itemize{
 #' \item{\code{wei_auc}: The weighted auc of similar pairs, related pairs and CUI-CUI pairs.}
-#' \item{\code{wei_auc}: The The auc of all subtype pairs.}
-#' \item{\code{wei_auc}: The full information of subtype pairs, including cut, TPR, etc...}
+#' \item{\code{anstable}: The The auc of all subtype pairs.}
+#' \item{\code{fulltable}: The full information of subtype pairs, including cut, TPR, etc...}
 #' }
 #' 
 #' @return A list.

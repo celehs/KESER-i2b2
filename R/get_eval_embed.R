@@ -14,7 +14,7 @@
 #' @param ARP_file All relation pairs data file with format '.csv', '.parque' or '.Rdata'.
 #' @param dims A vector of numeric values for dimension.
 #' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.
-#' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \cdoe{2}.
+#' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.
 #' @return A list of infomation of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
 #' @export
@@ -136,13 +136,6 @@ get_eval_embed <- function(CO_file,
 
 # Get Plotting Output File
 ################################################################################
-# plot_val <- "auc"                                    # Metric for Evaluation (Columns in Summary.Rds Dataframes), Could be: #pairs, auc, cut/0.01, cut/0.05, cut/0.1, TPR/0.01, TPR/0.05, TPR/0.1
-# knit_format <- "html"                                # Format of Plotting File - Should be "html" or "pdf"
-# labels <- c("PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)",
-#             "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)",
-#             "PheCode-LAB(rela)")                     # Labels(pairs) to Include in Plots - If NULL Then Include All Labels
-# split_patterns <- list("Similarity" = "(sim)", 
-#                        "Relation" = "(rela)")        # Patterns to Split Pairs into Groups
 
 ################################################################################
 #' Generate Plot Report
@@ -156,7 +149,7 @@ get_eval_embed <- function(CO_file,
 #' Options could be: #"pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05" or "TPR/0.1".
 #' @param knit_format Format of plot report, "pdf" or "html".
 #' @param labels Labels to be used in plots, options are the row names of summary evaluation dataframes.
-#' @split_patterns Pattern to split lablels, normally not changed.
+#' @param split_patterns Pattern to split lablels, normally not changed.
 #' @export
 get_report <- function(summary,
                        plot_val = "auc",
