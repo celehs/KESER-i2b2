@@ -1,0 +1,84 @@
+---
+title: Evaluation of Embedding over Differnt Dimensions
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    df_print: kable
+---
+
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+\newpage
+
+## Description
+
+For each dimension value, the process of embedding generation & evaluation will take about **26** to **30** mins depending on value size.
+<br/>  
+<br/>  
+
+**Summary Data File:** `r summary_file`.
+
+**Dimension Setting:** `r paste(dims, collapse = ", ")`.
+
+**Co-occurrence File:** `r CO_file`.
+
+**Multi-axial File:** `r HAM_file`.
+
+**All Relation Pairs File:** `r ARP_file`.
+
+**Evaluation Metric:** `r plot_val`.
+<br/>  
+<br/>  
+
+
+```{r, echo=FALSE}
+  
+# get plot data
+df_plot <- get_plot_data(summary, col = plot_val, labels = labels)  
+
+# split data by group (Similarity, Relation, Others)
+data_split <-  split_data(df_plot, patterns = split_patterns)
+
+# reshape split data for plot
+data_reshape <- lapply(names(data_split), function(x) {
+  reshape_data(data_split[[x]], y = plot_val)
+})
+names(data_reshape) <- names(data_split)
+
+```
+
+## Evaluation Results {.tabset}
+
+### Similarity
+```{r, echo=FALSE}
+if (is.null(data_reshape$Similarity)) {
+  cat("Not contents.")
+} else data_reshape$Similarity %>% plt(y = plot_val, method = "ggplot")
+```
+
+
+### Relation
+```{r, echo=FALSE}
+if (is.null(data_reshape$Relation)) {
+  cat("Not contents.")
+} else data_reshape$Relation %>% plt(y = plot_val, method = "ggplot")
+```
+
+      
+### Other
+```{r, echo=FALSE}
+if (is.null(data_reshape$Other)) {
+  cat("Not contents.")
+} else data_reshape$Other %>% plt(y = plot_val, method = "ggplot")
+```
+
+
+### Data
+```{r, echo=FALSE}
+df_plot
+```
+
