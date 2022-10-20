@@ -3,8 +3,13 @@
 
 # keser-i2b2
 
-This is a package to: - Generate Embedding - Evaluate Embedding - Get
-Evaluation Plots
+This is a package to:
+
+- Generate Embedding
+
+- Evaluate Embedding
+
+- Get Evaluation Plots
 
 ## Installation
 
@@ -26,10 +31,13 @@ devtools::load_all()
 
 ## Usage
 
-Make sure you have the following files available: - Hierarchy file, such
-as `MultiAxialHierarchy.csv` - Relation pairs file, such as
-`AllRelationPairsWithNull.Rdata` - Input data file, such as
-`rpdr_code_cooccurrence_victor_2019.csv`
+Make sure you have the following files available:
+
+- Hierarchy file, such as `MultiAxialHierarchy.csv`
+
+- Relation pairs file, such as `AllRelationPairsWithNull.Rdata`
+
+- Input data file, such as `rpdr_code_cooccurrence_victor_2019.csv`
 
 Then, You can tune the dimensions on varaible `dims`, each dimension may
 take 26-30 mins to run.
