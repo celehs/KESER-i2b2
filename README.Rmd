@@ -28,6 +28,14 @@ install.packages("remotes")
 remotes::install_github("celehs/KESER-i2b2")
 ```
 
+If you can't install it, alternative opntion is to download the repo and use `devtools::load_all()` to load the package. 
+
+``` r
+install.packages("devtools")
+setwd("D:\\Projects\\harvard\\keser-i2b2")     # Set to your path
+devtools::load_all()    
+```
+
 ## Usage
 
 Make sure you have the following files available:
