@@ -352,8 +352,8 @@ get_type = function(AllRelationPairs){
 #' @param evatype Can be "train", "test", all the other character would be ignored.
 #' @param prop There are 3 scenarios:
 #' \itemize{
-#' \item{If \code{evatype="train"}, choose first \code{(prop * 100)}% pairs as training pairs.}
-#' \item{If \code{evatype="test"}, choose last \code{(prop * 100)}% pairs as test pairs.}
+#' \item{If \code{evatype="train"}, choose first \code{(prop * 100)}\% pairs as training pairs.}
+#' \item{If \code{evatype="test"}, choose last \code{(prop * 100)}\% pairs as test pairs.}
 #' \item{Otherwise, using all pairs to evaluate the embedding.}
 #' }
 #' 

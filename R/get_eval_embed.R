@@ -17,6 +17,7 @@
 #' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.
 #' @return A list of infomation of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
+#' 
 #' @export
 get_eval_embed <- function(CO_file, 
                            HAM_file, 
