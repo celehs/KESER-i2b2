@@ -571,7 +571,9 @@ plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
 #########################################################################
 #' Functions to read data file
 #' 
-#' Data format can be .csv/.parquet/.Rdata.
+#' @param file_name Data format can be .csv/.parquet/.Rdata.
+#' @return A DataFrame.
+#' @export
 read_file <- function(file_name) {
   ext <- strsplit(tolower(file_name), split = "\\.")[[1]][-1]
   if (ext == "csv") return(readr::read_csv(file_name))
