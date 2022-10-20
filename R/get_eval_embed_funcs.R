@@ -455,12 +455,12 @@ Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
 
 # function to get plot data
 get_plot_data <- function(summary, col="auc", dim_name = "dims", labels = NULL) {
-  l <- lapply(names(summary), function(d) {
-    summary[[d]][["summary"]][[col]]
+  l <- lapply(names(summary[["summary"]]), function(d) {
+    summary[["summary"]][[d]][["evaluation"]][[col]]
   })
   df <- do.call(rbind.data.frame, l)
-  colnames(df) <- row.names(summary[[1]][["summary"]])
-  row.names(df) <- names(summary)
+  colnames(df) <- row.names(summary[["summary"]][[1]][["evaluation"]])
+  row.names(df) <- names(summary[["summary"]])
   df <- df %>% t() %>% stats::na.omit() %>% t() %>% as.data.frame()  # delete NA Columns
   df[[dim_name]] <- as.numeric(row.names(df))
   

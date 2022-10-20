@@ -1,0 +1,21 @@
+Package: keser-i2b2
+Title: KESER Embedding Generation & Evaluation
+Version: 0.1.0
+Date: 2022-10-20
+Description: This package is to generate & evaluate embeddings from co-occurence data with given dimension range.
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Depends: 
+    R (4.0.5)
+Imports:
+    dplyr,
+	pROC,
+	plotly,
+	ggplot2,
+	rmarkdown,
+	DT,
+	readr,
+	arrow
+VignetteBuilder: knitr
