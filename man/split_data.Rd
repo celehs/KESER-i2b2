@@ -14,3 +14,4 @@ split_data(
 \description{
 Function to split plot data by group
 }
+\keyword{internal}

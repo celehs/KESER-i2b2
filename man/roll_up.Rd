@@ -9,3 +9,4 @@ roll_up(data, rolluplist, viewproc = TRUE)
 \description{
 Roll-up data
 }
+\keyword{internal}

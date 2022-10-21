@@ -9,3 +9,4 @@ find_rollup(x, rolluplist)
 \description{
 roll up data
 }
+\keyword{internal}

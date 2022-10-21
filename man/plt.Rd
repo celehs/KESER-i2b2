@@ -9,3 +9,4 @@ plt(data, x = "dims", y = "auc", group = "pairs", method = "plotly")
 \description{
 Function to plot scatter-line by group
 }
+\keyword{internal}

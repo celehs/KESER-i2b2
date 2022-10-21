@@ -9,3 +9,4 @@ code_rollup(data, rolluplist, viewproc = TRUE)
 \description{
 Roll-up codes
 }
+\keyword{internal}

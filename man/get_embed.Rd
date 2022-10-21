@@ -10,7 +10,10 @@ get_embed(mysvd, d = 2000, normalize = TRUE)
 \item{mysvd}{The svd result.}
 
 \item{d}{Dimension of the final embedding.}
+
+\item{normalize}{TRUE or FALSE, to normalize embedding or not.}
 }
 \description{
 Getting embedding from svd
 }
+\keyword{internal}

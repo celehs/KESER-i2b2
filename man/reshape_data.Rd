@@ -9,3 +9,4 @@ reshape_data(data, x = "dims", y = "vals", group = "pairs")
 \description{
 Function to reshape plot data
 }
+\keyword{internal}

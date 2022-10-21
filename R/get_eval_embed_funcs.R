@@ -10,14 +10,17 @@ library(arrow)
 
 # Functions To Obtain SPPMI from cooc
 #########################################################################
-#' find two level LP codes for LOINC codes
+#' Find Two level LP Codes for LOINC Codes
 #' 
-#' @param codelist is a triple data.frame, colnames are V1, V2, V3
+#' @param codelist A triple-column dataframe, colnames are V1, V2, V3
 #' \itemize{
 #' \item{\code{V1: Shows the row id (code id).}}
 #' \item{\code{V2: Shows the col id (code id).}}
 #' \item{\code{V2: Shows the counts for certain pair.}}
 #' }
+#' @param MAH: Multi-axial hierarchy dataframe.
+#' @return A dataframe.
+#' @export
 get_rollup_dict = function(codelist, MAH){
   # codelist is a vector including LOINC codes
   # MAH is a data.frame loaded from a csv called MultiAxialHierarchy.csv
@@ -46,6 +49,7 @@ get_rollup_dict = function(codelist, MAH){
 
 
 #' roll up data
+#' @keywords internal
 find_rollup = function(x, rolluplist){
   i = which(rolluplist[,1]==x)
   if(length(i) == 0){
@@ -57,6 +61,7 @@ find_rollup = function(x, rolluplist){
 }
 
 #' roll up data 2
+#' @keywords internal
 find_rollup2 = function(x, rolluplist){
   i = which(rolluplist[,2]==x)
   if(length(i) == 0){
@@ -75,6 +80,7 @@ find_rollup2 = function(x, rolluplist){
 #' 
 #' let the "first col (V1) id" < "second col (V2) id"
 #' and add the row with same V1 and V2
+#' @keywords internal
 code_arrange = function(data){
   name_list = union(data$V1[!duplicated(data$V1)],
                     data$V2[!duplicated(data$V2)])
@@ -90,6 +96,7 @@ code_arrange = function(data){
 }
 
 #' Split codes
+#' @keywords internal
 code_split = function(data){
   a = sapply(data$V1, function(s){
     x = strsplit(s,":")[[1]]
@@ -111,6 +118,7 @@ code_split = function(data){
 }
 
 #' Roll-up codes
+#' @keywords internal
 code_rollup = function(data,rolluplist,viewproc=TRUE){
   idx1 = which(data$V4 == "LOINC")
   idx2 = which(data$V6 == "LOINC")
@@ -159,6 +167,7 @@ code_rollup = function(data,rolluplist,viewproc=TRUE){
 }
 
 #' Roll-up data
+#' @keywords internal
 roll_up = function(data,rolluplist,viewproc=TRUE){
   # viewproc: this function takes a long time, use viewproc=TRUE to view where it is
   #data = code_arrange(data)
@@ -179,13 +188,15 @@ roll_up = function(data,rolluplist,viewproc=TRUE){
 
 
 
-#' get SPPMI matrix
+#' Get SPPMI matrix
 #' 
-#' use this function to obtain SPPMI matrix from cooc matrix in triple form.
+#' Obtain SPPMI Matrix from COOC Matrix in Triple Form.
 #' 
 #' @param cooc Should be a triple form of cooc.
 #' @param dict A data.frame.
 #' @param code_LPcode The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}
+#' @return A data matrix.
+#' @export
 getSPPMI = function(cooc, dict, code_LPcode){
   colnames(cooc) = c("feature1","feature2","ct_A")
   id = which(cooc$feature1%in%dict$feature_id & cooc$feature2%in%dict$feature_id)
@@ -236,9 +247,11 @@ getSPPMI = function(cooc, dict, code_LPcode){
 }
 
 
-#' get embedding from SPPMI matrix
+#' Get Embedding from SPPMI Matrix
 #' @param SPPMI The SPPMI matrix obtained from the previous section.
 #' @param d A numerical shows the target dimension of embedding.
+#' @return A data matrix.
+#' @export
 getembedding = function(SPPMI, d = 1500){
   a = which(apply(SPPMI,1,sum)!=0)
   SPPMI = SPPMI[a,a]
@@ -262,6 +275,9 @@ getembedding = function(SPPMI, d = 1500){
 #' 
 #' @param mysvd The svd result.
 #' @param d Dimension of the final embedding.
+#' @param normalize TRUE or FALSE, to normalize embedding or not.
+#' @keywords internal
+#' @export
 get_embed = function(mysvd, d=2000, normalize=TRUE){
   id = which(sign(mysvd$u[1,])==sign(mysvd$v[1,]))
   id = id[1:min(d,length(id))]
@@ -345,7 +361,7 @@ get_type = function(AllRelationPairs){
   return(list(type = tn[,1], name = tn[,2]))
 }
 
-#' Evaluate the embedding (codi & CUI)
+#' Evaluate The Embedding (Codi & CUI)
 #' 
 #' @param embed Embedding, should be normed, rownames are code names.
 #' @param AllRelationPairs Construct from get_relation_dict.R.
@@ -366,6 +382,7 @@ get_type = function(AllRelationPairs){
 #' }
 #' 
 #' @return A list.
+#' @export
 Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
@@ -411,9 +428,13 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
               fulltable = as.data.frame(fulltable)))
 }
 
-#' Evaluate the embedding (codi & CUI)
+#' Evaluate The Embedding (Codi Only)
 #' 
 #' Similar to function \code{Evaluate}, but just for codi pairs evaluation.
+#' 
+#' @inheritParams Evaluate
+#' @return A list.
+#' @export
 Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
@@ -452,6 +473,7 @@ Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
 #########################################################################
 
 #' Function to get plot data
+#' @keywords internal
 get_plot_data <- function(summary, col="auc", dim_name = "dims", labels = NULL) {
   l <- lapply(names(summary[["summary"]]), function(d) {
     summary[["summary"]][[d]][["evaluation"]][[col]]
@@ -471,6 +493,7 @@ get_plot_data <- function(summary, col="auc", dim_name = "dims", labels = NULL) 
 } 
 
 #' Function to split plot data by group
+#' @keywords internal
 split_data <- function(plot_data, include.others = TRUE, dim_name = "dims",
                        patterns=list("Similarity" = "(sim)", "Relation" = "(rela)")) {
   
@@ -500,6 +523,7 @@ split_data <- function(plot_data, include.others = TRUE, dim_name = "dims",
 }
 
 #' Function to reshape plot data
+#' @keywords internal
 reshape_data <- function(data, x = "dims", y = "vals", group = "pairs") {
   out <- data.frame()
   for (col in setdiff(colnames(data), x)) {
@@ -512,7 +536,8 @@ reshape_data <- function(data, x = "dims", y = "vals", group = "pairs") {
   return(out)
 }
 
-#' Function to plot scatter-line by group 
+#' Function to plot scatter-line by group
+#' @keywords internal 
 plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
   
   # rename column names

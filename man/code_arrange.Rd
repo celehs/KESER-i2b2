@@ -10,3 +10,4 @@ code_arrange(data)
 let the "first col (V1) id" < "second col (V2) id"
 and add the row with same V1 and V2
 }
+\keyword{internal}

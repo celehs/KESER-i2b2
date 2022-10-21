@@ -1,0 +1,18 @@
+url: ~
+template:
+  bootstrap: 5
+  
+reference:
+- title: "Help Docs for Exported Functions"
+  desc: >
+    Functions exported to users.
+  contents: 
+  - get_eval_embed
+  - get_report
+  - read_file
+  - Evaluate
+  - Evaluate_tmp 
+  - getembedding
+  - getSPPMI
+  - get_rollup_dict
+

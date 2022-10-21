@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_eval_embed_funcs.R
 \name{getembedding}
 \alias{getembedding}
-\title{get embedding from SPPMI matrix}
+\title{Get Embedding from SPPMI Matrix}
 \usage{
 getembedding(SPPMI, d = 1500)
 }
@@ -11,6 +11,9 @@ getembedding(SPPMI, d = 1500)
 
 \item{d}{A numerical shows the target dimension of embedding.}
 }
+\value{
+A data matrix.
+}
 \description{
-get embedding from SPPMI matrix
+Get Embedding from SPPMI Matrix
 }

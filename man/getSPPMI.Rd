@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_eval_embed_funcs.R
 \name{getSPPMI}
 \alias{getSPPMI}
-\title{get SPPMI matrix}
+\title{Get SPPMI matrix}
 \usage{
 getSPPMI(cooc, dict, code_LPcode)
 }
@@ -13,6 +13,9 @@ getSPPMI(cooc, dict, code_LPcode)
 
 \item{code_LPcode}{The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}}
 }
+\value{
+A data matrix.
+}
 \description{
-use this function to obtain SPPMI matrix from cooc matrix in triple form.
+Obtain SPPMI Matrix from COOC Matrix in Triple Form.
 }

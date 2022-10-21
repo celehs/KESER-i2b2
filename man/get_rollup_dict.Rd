@@ -2,18 +2,23 @@
 % Please edit documentation in R/get_eval_embed_funcs.R
 \name{get_rollup_dict}
 \alias{get_rollup_dict}
-\title{find two level LP codes for LOINC codes}
+\title{Find Two level LP Codes for LOINC Codes}
 \usage{
 get_rollup_dict(codelist, MAH)
 }
 \arguments{
-\item{codelist}{is a triple data.frame, colnames are V1, V2, V3
+\item{codelist}{A triple-column dataframe, colnames are V1, V2, V3
 \itemize{
 \item{\code{V1: Shows the row id (code id).}}
 \item{\code{V2: Shows the col id (code id).}}
 \item{\code{V2: Shows the counts for certain pair.}}
 }}
+
+\item{MAH:}{Multi-axial hierarchy dataframe.}
+}
+\value{
+A dataframe.
 }
 \description{
-find two level LP codes for LOINC codes
+Find Two level LP Codes for LOINC Codes
 }

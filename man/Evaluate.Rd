@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_eval_embed_funcs.R
 \name{Evaluate}
 \alias{Evaluate}
-\title{Evaluate the embedding (codi & CUI)}
+\title{Evaluate The Embedding (Codi & CUI)}
 \usage{
 Evaluate(embed, AllRelationPairs, evatype = "all", prop = 0.3)
 }
@@ -24,7 +24,7 @@ Evaluate(embed, AllRelationPairs, evatype = "all", prop = 0.3)
 A list.
 }
 \description{
-Evaluate the embedding (codi & CUI)
+Evaluate The Embedding (Codi & CUI)
 }
 \details{
 \itemize{

@@ -2,9 +2,26 @@
 % Please edit documentation in R/get_eval_embed_funcs.R
 \name{Evaluate_tmp}
 \alias{Evaluate_tmp}
-\title{Evaluate the embedding (codi & CUI)}
+\title{Evaluate The Embedding (Codi Only)}
 \usage{
 Evaluate_tmp(embed, AllRelationPairs, evatype = "all", prop = 0.3)
+}
+\arguments{
+\item{embed}{Embedding, should be normed, rownames are code names.}
+
+\item{AllRelationPairs}{Construct from get_relation_dict.R.}
+
+\item{evatype}{Can be "train", "test", all the other character would be ignored.}
+
+\item{prop}{There are 3 scenarios:
+\itemize{
+\item{If \code{evatype="train"}, choose first \code{(prop * 100)}\% pairs as training pairs.}
+\item{If \code{evatype="test"}, choose last \code{(prop * 100)}\% pairs as test pairs.}
+\item{Otherwise, using all pairs to evaluate the embedding.}
+}}
+}
+\value{
+A list.
 }
 \description{
 Similar to function \code{Evaluate}, but just for codi pairs evaluation.

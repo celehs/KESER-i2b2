@@ -9,3 +9,4 @@ get_plot_data(summary, col = "auc", dim_name = "dims", labels = NULL)
 \description{
 Function to get plot data
 }
+\keyword{internal}
