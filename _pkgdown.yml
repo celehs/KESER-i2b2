@@ -1,6 +1,6 @@
-url: ~
 template:
-  bootstrap: 5
+    params:
+    bootswatch: cosmo
   
 reference:
 - title: "Help Docs for Exported Functions"
