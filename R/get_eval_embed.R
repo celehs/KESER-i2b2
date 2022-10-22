@@ -94,6 +94,7 @@ get_eval_embed <- function(CO_file,
     # Get Embedding
     cat("\nGetting embedding...")
     embed = getembedding(SPPMI, dim)
+    save(embed, file =  "embed_AD_tst.Rdata")
     #########################################################################
     
     

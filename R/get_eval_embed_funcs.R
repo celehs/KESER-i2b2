@@ -330,8 +330,10 @@ evalu_part = function(embed, pairs){
   if(nrow(Boot$pairs_h)==0|nrow(Boot$pairs_null)==0){
     myauc = c('#pairs'=0,'auc'=NA,'cut/0.01'=NA,'cut/0.05'=NA,'cut/0.1'=NA,
               'TPR/0.01'=NA,'TPR/0.05'=NA,'TPR/0.1'=NA)
-    return(list(ans = myauc, name = NA, 
-                type = NA))
+    # YO comment: Why return a list other than just myacu as a vector?
+    # return(list(ans = myauc, name = NA, 
+    #             type = NA))
+    return(myauc)    # YO Modified - Should the return be consistent as a vector other than a list?
   }
   return(ROC_id(embed, Boot))
 }

@@ -44,6 +44,8 @@ Make sure you have the following files available:
 - Co-occurrence matrix dict file (optional), such as
   `UPMC_AD_wordindex_mapping_datainfo.csv`
 
+**Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`.
+
 Then, You can tune the dimensions on variable `dims`, each dimension may
 take 26-30 mins to run.
 
@@ -73,7 +75,7 @@ Otherwise, if there’s no code pairs but index, a dictionary
 `CO_dict_file` is needed:
 
 ``` r
-summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Repalce your dict file here 
+summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Replace your dict file here 
 ```
 
 The output of `get_eval_embed` is a list includes meta-data, embedding &
