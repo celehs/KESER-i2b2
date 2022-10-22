@@ -18,16 +18,24 @@ get_eval_embed(
 \item{CO_file}{Co-ccurrence data file with format '.csv', '.parque' or '.Rdata'.
 The data should be a table with 3 columns V1, V2, V3:
 \itemize{
-\item{\code{V1}}: Shows the row id (code id).
-\item{\code{V2}}: Shows the col id (code id).
+\item{\code{V1}}: Shows the row id (code id) or row code pair.
+\item{\code{V2}}: Shows the col id (code id) or row code pair..
 \item{\code{V3}}: Shows the counts for certain pair.
-}}
+}
+Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
+from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
 \item{HAM_file}{Multi-axial hierarchy data file with format '.csv', '.parque' or '.Rdata'.}
 
 \item{ARP_file}{All relation pairs data file with format '.csv', '.parque' or '.Rdata'.}
 
 \item{dims}{A vector of numeric values for dimension.}
+
+\item{CO_dict_file}{A two-column dataframe, where:
+\itemize{
+\item{\code{Column 1}: Shows the name of code pair.}
+\item{\code{Column 2}: Shows the corresponding id number.}
+}}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 
