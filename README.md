@@ -18,6 +18,7 @@ You can install the development version from GitHub with:
 ``` r
 install.packages("remotes")
 remotes::install_github("celehs/KESER-i2b2")
+library(keser.i2b2)
 ```
 
 If you can’t install it, alternative opntion is to download the repo and
@@ -37,9 +38,13 @@ Make sure you have the following files available:
 
 - Relation pairs file, such as `AllRelationPairsWithNull.Rdata`
 
-- Input data file, such as `rpdr_code_cooccurrence_victor_2019.csv`
+- Co-occurrence matrix file, such as
+  `rpdr_code_cooccurrence_victor_2019.csv`
 
-Then, You can tune the dimensions on varaible `dims`, each dimension may
+- Co-occurrence matrix dict file (optional), such as
+  `UPMC_AD_wordindex_mapping_datainfo.csv`
+
+Then, You can tune the dimensions on variable `dims`, each dimension may
 take 26-30 mins to run.
 
 ### Set up Parameters
@@ -47,7 +52,6 @@ take 26-30 mins to run.
 For the file paths, change it base on your file locations.
 
 ``` r
-library(keser.i2b2)
 CO_file <- "dungeon//data//rpdr_code_cooccurrence_victor_2019.csv"  # Co-occurrence File: .csv/.parquet/.Rdata
 HAM_file <- "dungeon//data//MultiAxialHierarchy.csv"                # Multi-axial Hierarchy File: .csv/.parquet/.Rdata  
 ARP_file <- "dungeon//data//AllRelationPairsWithNull.Rdata"         # All Relation Pairs File: .csv/.parquet/.Rdata  
@@ -58,12 +62,24 @@ data_type <- 1                                                      # Input Data
 
 ### Generate Embedding & Evaluation
 
+If your Co-occurrence matrix file has code pairs, a dictionary is not
+needed:
+
 ``` r
 summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, out_dir)
 ```
 
+Otherwise, if there’s no code pairs but index, a dictionary
+`CO_dict_file` is needed:
+
+``` r
+summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Repalce your dict file here 
+```
+
 The output of `get_eval_embed` is a list includes meta-data, embedding &
-evaluation results. The list will also be saved as `.Rdata`.
+evaluation results. The list will also be saved as `.Rdata`. In our
+testing case, each dimension value will take around **26** to **30**
+mins depending on actual data.
 
 #### Generate Plot Report
 

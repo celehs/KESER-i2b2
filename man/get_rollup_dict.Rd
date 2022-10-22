@@ -9,9 +9,9 @@ get_rollup_dict(codelist, MAH)
 \arguments{
 \item{codelist}{A triple-column dataframe, colnames are V1, V2, V3
 \itemize{
-\item{\code{V1: Shows the row id (code id).}}
-\item{\code{V2: Shows the col id (code id).}}
-\item{\code{V2: Shows the counts for certain pair.}}
+\item{\code{V1: Shows the row code pair.}}
+\item{\code{V2: Shows the col code pair.}}
+\item{\code{V3: Shows the counts for certain pair.}}
 }}
 
 \item{MAH:}{Multi-axial hierarchy dataframe.}

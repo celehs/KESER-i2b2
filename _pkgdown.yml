@@ -15,4 +15,5 @@ reference:
   - getembedding
   - getSPPMI
   - get_rollup_dict
+  - map_CO
 

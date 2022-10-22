@@ -14,9 +14,9 @@ library(arrow)
 #' 
 #' @param codelist A triple-column dataframe, colnames are V1, V2, V3
 #' \itemize{
-#' \item{\code{V1: Shows the row id (code id).}}
-#' \item{\code{V2: Shows the col id (code id).}}
-#' \item{\code{V2: Shows the counts for certain pair.}}
+#' \item{\code{V1: Shows the row code pair.}}
+#' \item{\code{V2: Shows the col code pair.}}
+#' \item{\code{V3: Shows the counts for certain pair.}}
 #' }
 #' @param MAH: Multi-axial hierarchy dataframe.
 #' @return A dataframe.
@@ -609,5 +609,38 @@ read_file <- function(file_name) {
     err_msg <- paste0("Number of variable in '", file_name, "' NOT equal to 1!")
     if (length(var) != 1) stop(err_msg) else return(get(var)) 
   }
+}
+
+
+#' Functions to map CO codes from CO dict
+#' 
+#' @param CO COOC matrix, Should be a triple form.
+#' \itemize{
+#' \item{\code{V1}}: Shows the row id (code id).
+#' \item{\code{V2}}: Shows the col id (code id).
+#' \item{\code{V3}}: Shows the counts for certain pair.
+#' }
+#' @param CO_dict COOC matrix dictionary, Should be a double form.
+#' \itemize{
+#' \item{\code{code}}: The code pair.
+#' \item{\code{index}}: The index for code pair.
+#' }
+#' @return A DataFrame, new COOC with code pairs matched.
+#' @export
+map_CO <- function(CO,  CO_dict) {
+  CO_cols <- colnames(CO)
+  colnames(CO) <- c("V1", "V2", "V3")
+  colnames(CO_dict) <- c("code", "index")
+  V1 <- CO %>% dplyr::left_join(CO_dict, by = c("V1" = "index"))
+  V2 <- CO %>% dplyr::left_join(CO_dict, by = c("V2" = "index"))
+  CO_new <- data.frame(V1 = V1[["code"]], V2 = V2[["code"]], V3 = CO[["V3"]])
+  V1_NA <- V1[["V1"]][is.na(CO_new[["V1"]])]
+  V2_NA <- V2[["V2"]][is.na(CO_new[["V2"]])]
+  NAs <- append(V1_NA, V2_NA)
+  if (length(NAs) != 0) {
+    stop(paste0("\nCode Pairs Not Found for below index:\n", NAs))
+  }
+  colnames(CO_new) <- CO_cols
+  return(CO_new)
 }
 #########################################################################

@@ -9,6 +9,7 @@ get_eval_embed(
   HAM_file,
   ARP_file,
   dims,
+  CO_dict_file = NULL,
   out_dir = NULL,
   data_type = 1
 )

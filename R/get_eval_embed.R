@@ -23,6 +23,7 @@ get_eval_embed <- function(CO_file,
                            HAM_file, 
                            ARP_file, 
                            dims,
+                           CO_dict_file = NULL,
                            out_dir = NULL, 
                            data_type = 1) {
       
@@ -35,12 +36,23 @@ get_eval_embed <- function(CO_file,
   dir.create(out_dir, showWarnings = FALSE)
   
   # Load Data
-  cat("Loading data...")
+  cat("Loading data...\n")
   CO <- read_file(CO_file)
   MAH <- read_file(HAM_file)
   ARP <- read_file(ARP_file)
   
+  # Check & Map CO
+  if (class(CO[[1]]) == "integer") {
+    if (is.na(CO_dict_file)) stop("Please provide CO dict.") else {
+      
+      # Map CO If CO Dict Passed
+      CO_dict <- read_file(CO_dict_file)
+      cat("\nMapping CO codes from CO dict...\n")
+      CO <- map_CO(CO, CO_dict)
+    }
+  }
   
+
   # Change CO Column Names
   colnames(CO) <- c("V1", "V2", "V3")
   
