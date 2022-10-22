@@ -15,7 +15,7 @@ get_eval_embed(
 )
 }
 \arguments{
-\item{CO_file}{Co-ccurrence data file with format '.csv', '.parque' or '.Rdata'.
+\item{CO_file}{Co-ccurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 The data should be a table with 3 columns V1, V2, V3:
 \itemize{
 \item{\code{V1}}: Shows the row id (code id) or row code pair.
@@ -25,17 +25,18 @@ The data should be a table with 3 columns V1, V2, V3:
 Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
-\item{HAM_file}{Multi-axial hierarchy data file with format '.csv', '.parque' or '.Rdata'.}
+\item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
-\item{ARP_file}{All relation pairs data file with format '.csv', '.parque' or '.Rdata'.}
+\item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
 \item{dims}{A vector of numeric values for dimension.}
 
-\item{CO_dict_file}{A two-column dataframe, where:
+\item{CO_dict_file}{A data file with two columns, where:
 \itemize{
 \item{\code{Column 1}: Shows the name of code pair.}
 \item{\code{Column 2}: Shows the corresponding id number.}
-}}
+}
+File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 

@@ -60,7 +60,7 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>CO_file</dt>
-<dd><p>Co-ccurrence data file with format '.csv', '.parque' or '.Rdata'.
+<dd><p>Co-ccurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
 The data should be a table with 3 columns V1, V2, V3:</p><ul><li><p><code>V1</code>: Shows the row id (code id) or row code pair.</p></li>
 <li><p><code>V2</code>: Shows the col id (code id) or row code pair..</p></li>
 <li><p><code>V3</code>: Shows the counts for certain pair.</p></li>
@@ -69,11 +69,11 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 
 
 <dt>HAM_file</dt>
-<dd><p>Multi-axial hierarchy data file with format '.csv', '.parque' or '.Rdata'.</p></dd>
+<dd><p>Multi-axial hierarchy data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
 
 
 <dt>ARP_file</dt>
-<dd><p>All relation pairs data file with format '.csv', '.parque' or '.Rdata'.</p></dd>
+<dd><p>All relation pairs data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
 
 
 <dt>dims</dt>
@@ -81,9 +81,9 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 
 
 <dt>CO_dict_file</dt>
-<dd><p>A two-column dataframe, where:</p><ul><li><p><code>Column 1</code>: Shows the name of code pair.</p></li>
+<dd><p>A data file with two columns, where:</p><ul><li><p><code>Column 1</code>: Shows the name of code pair.</p></li>
 <li><p><code>Column 2</code>: Shows the corresponding id number.</p></li>
-</ul></dd>
+</ul><p>File format can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
 
 
 <dt>out_dir</dt>
