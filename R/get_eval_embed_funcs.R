@@ -437,7 +437,7 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
 #' @inheritParams Evaluate
 #' @return A list.
 #' @export
-Evaluate_tmp = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
+Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
     AllRelationPairs = lapply(AllRelationPairs, function(x){

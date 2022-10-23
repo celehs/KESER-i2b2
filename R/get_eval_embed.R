@@ -60,7 +60,6 @@ get_eval_embed <- function(CO_file,
     }
   }
   
-
   # Change CO Column Names
   colnames(CO) <- c("V1", "V2", "V3")
   
@@ -76,6 +75,23 @@ get_eval_embed <- function(CO_file,
   cat("\n")
   cat(paste0("Dimensions Setting:\n", paste(dims, collapse=", ")))
   cat(paste0("\n\nTotal Time Cost Estimation: ", round(length(dims) * 30 / 60, 2), " Hours\n"))
+  
+  # Generate SPPMI from cooc
+  #########################################################################
+  
+  # Get Unique Values for First two Columns of CO
+  CO_unique <- unique(c(CO$V1, CO$V2))
+  
+  # Obtain The Roll Up Dictionary For LOINC Codes:
+  cat("\nGetting rollup dict...")
+  code_LPcode = get_rollup_dict(CO_unique, MAH)
+  
+  # Calculate SPPMI
+  cat("\nCalculating SPPMI...")
+  SPPMI = getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
+  #########################################################################
+  
+  # Embedding Generation & Calculation
   n_dims <- length(dims)
   summary <- lapply(1:n_dims, function(i) {
     
@@ -86,23 +102,10 @@ get_eval_embed <- function(CO_file,
     # Get Time Per Dim
     start_sub_t <- Sys.time()
     
-    # Generate embedding from cooc
-    #########################################################################
-    # Get Unique Values for First two Columns of CO
-    CO_unique <- unique(c(CO$V1, CO$V2))
-    
-    # Obtain The Roll Up Dictionary For LOINC Codes:
-    cat("\nGetting rollup dict...")
-    code_LPcode = get_rollup_dict(CO_unique, MAH)
-    
-    # Calculate SPPMI
-    cat("\nCalculating SPPMI...")
-    SPPMI = getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
-    
     # Get Embedding
+    #########################################################################
     cat("\nGetting embedding...")
     embed = getembedding(SPPMI, dim)
-    save(embed, file =  "embed_AD_tst.Rdata")
     #########################################################################
     
     
@@ -111,9 +114,9 @@ get_eval_embed <- function(CO_file,
     # Evaluate Embedding
     cat("\nEvaluating...")
     if (data_type == 1) {
-      ans = Evaluate_tmp(embed, AllRelationPairs = ARP)
+      ans = Evaluate_codi(embed, AllRelationPairs = ARP)  # data_type == 1: codi only
     } else if (data_type == 2) {
-      ans = Evaluate(embed, AllRelationPairs = ARP)
+      ans = Evaluate(embed, AllRelationPairs = ARP)       # data_type == 2: codi & CUI
     } else stop("Invalid Value: 'data_type' should be 1 or 2.")
     #########################################################################
     
