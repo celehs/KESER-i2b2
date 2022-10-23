@@ -18,7 +18,7 @@ You can install the development version from GitHub with:
 ``` r
 install.packages("remotes")
 remotes::install_github("celehs/KESER-i2b2")
-library(keser.i2b2)
+library(KESER.i2b2)
 ```
 
 If you can’t install it, alternative opntion is to download the repo and

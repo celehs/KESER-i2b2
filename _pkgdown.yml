@@ -11,7 +11,7 @@ reference:
   - get_report
   - read_file
   - Evaluate
-  - Evaluate_tmp 
+  - Evaluate_codi 
   - getembedding
   - getSPPMI
   - get_rollup_dict
