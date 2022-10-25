@@ -12,7 +12,6 @@
 #' }
 #' Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 #' from id to code pair is needed. Please see \code{CO_dict_file} for details.
-#' @param HAM_file Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @param ARP_file All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @param dims A vector of numeric values for dimension.
 #' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.
@@ -22,17 +21,20 @@
 #' \item{\code{Column 2}: Shows the corresponding id number.}
 #' }
 #' File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' @param HAM_file Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' By default it's set to \code{NULL} and read the default file within the package. 
+#' If a file name is offered, it'll read it instead and replace the default file
 #' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.
 #' @return A list of infomation of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
 #' 
 #' @export
 get_eval_embed <- function(CO_file, 
-                           HAM_file, 
                            ARP_file, 
                            dims,
                            CO_dict_file = NULL,
                            out_dir = NULL, 
+                           HAM_file = NULL,
                            data_type = 1) {
       
   
@@ -46,7 +48,7 @@ get_eval_embed <- function(CO_file,
   # Load Data
   cat("Loading data...\n")
   CO <- read_file(CO_file)
-  MAH <- read_file(HAM_file)
+  if (is.null(HAM_file)) MAH <- read_file(file.path("inst", "MAH.Rdata")) else MAH <- read_file(HAM_file)
   ARP <- read_file(ARP_file)
   
   # Check & Map CO

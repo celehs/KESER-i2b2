@@ -34,8 +34,6 @@ devtools::load_all()
 
 Make sure you have the following files available:
 
-- Hierarchy file, such as `MultiAxialHierarchy.csv`
-
 - Relation pairs file, such as `AllRelationPairsWithNull.Rdata`
 
 - Co-occurrence matrix file, such as
@@ -55,7 +53,6 @@ For the file paths, change it base on your file locations.
 
 ``` r
 CO_file <- "dungeon//data//rpdr_code_cooccurrence_victor_2019.csv"  # Co-occurrence File: .csv/.parquet/.Rdata
-HAM_file <- "dungeon//data//MultiAxialHierarchy.csv"                # Multi-axial Hierarchy File: .csv/.parquet/.Rdata  
 ARP_file <- "dungeon//data//AllRelationPairsWithNull.Rdata"         # All Relation Pairs File: .csv/.parquet/.Rdata  
 dims <- seq(200, 1000, 200)                                         # Dimension Setting
 out_dir <- NULL                                                     # Output folder setting -  If NULL All Outputs Will Be At: working_dir/output
@@ -68,14 +65,14 @@ If your Co-occurrence matrix file has code pairs, a dictionary is not
 needed:
 
 ``` r
-summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, out_dir)
+summary <- get_eval_embed(CO_file, ARP_file, dims, out_dir)
 ```
 
 Otherwise, if there’s no code pairs but index, a dictionary
 `CO_dict_file` is needed:
 
 ``` r
-summary <- get_eval_embed(CO_file, HAM_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Replace your dict file here 
+summary <- get_eval_embed(CO_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Replace your dict file here 
 ```
 
 The output of `get_eval_embed` is a list includes meta-data, embedding &

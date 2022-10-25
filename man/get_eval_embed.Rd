@@ -6,11 +6,11 @@
 \usage{
 get_eval_embed(
   CO_file,
-  HAM_file,
   ARP_file,
   dims,
   CO_dict_file = NULL,
   out_dir = NULL,
+  HAM_file = NULL,
   data_type = 1
 )
 }
@@ -25,8 +25,6 @@ The data should be a table with 3 columns V1, V2, V3:
 Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
-\item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
 \item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
 \item{dims}{A vector of numeric values for dimension.}
@@ -39,6 +37,10 @@ from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
+
+\item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+By default it's set to \code{NULL} and read the default file within the package. 
+If a file name is offered, it'll read it instead and replace the default file}
 
 \item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
 }
