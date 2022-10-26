@@ -103,15 +103,15 @@ get_eval_embed <- function(CO_file,
   cat("\nCalculating SPPMI...")
   t <- Sys.time()
   SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
-  t_cost <- round(as.numeric(difftime(t, Sys.time(), units = "mins")), 2)
-  cat(paste0("(", t_cost, " mins)\n"))
+  t_cost <- round(as.numeric(difftime(Sys.time(), t, units = "mins")), 2)
+  cat(paste0("\n(", t_cost, " mins)\n"))
   
   cat("\nCalculating SVD...")
   t <- Sys.time()
   SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
   SVD <- getSVD(SPPMI)
-  t_cost <- round(as.numeric(difftime(t, Sys.time(), units = "mins")), 2)
-  cat(paste0("(", t_cost, " mins)\n"))
+  t_cost <- round(as.numeric(difftime(Sys.time(), t, units = "mins")), 2)
+  cat(paste0("\n(", t_cost, " mins)\n"))
   #########################################################################
   
   # Embedding Generation & Calculation
