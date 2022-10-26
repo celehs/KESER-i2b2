@@ -9,7 +9,8 @@ Evaluate_codi(
   AllRelationPairs,
   evatype = "all",
   prop = 0.3,
-  normalize = TRUE
+  normalize = TRUE,
+  labels = NULL
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ Evaluate_codi(
 
 \item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
 For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
+
+\item{labels}{A character vector of labels in evaluations summary. Values can be 
+\code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
+"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"}}
 }
 \value{
 A list.

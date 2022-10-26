@@ -8,8 +8,6 @@ get_report(
   summary,
   plot_val = "auc",
   knit_format = "html",
-  labels = c("PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)",
-    "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-LAB(rela)"),
   split_patterns = list(Similarity = "(sim)", Relation = "(rela)")
 )
 }
@@ -21,9 +19,9 @@ Options could be: #"pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01"
 
 \item{knit_format}{Format of plot report, "pdf" or "html".}
 
-\item{labels}{Labels to be used in plots, options are the row names of summary evaluation dataframes.}
-
 \item{split_patterns}{Pattern to split lablels, normally not changed.}
+
+\item{labels}{Labels to be used in plots, options are the row names of summary evaluation dataframes.}
 }
 \description{
 \code{get_report} acts as plot report generation from summary returned by \code{get_eval_embed}.

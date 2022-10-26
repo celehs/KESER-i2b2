@@ -37,7 +37,8 @@ get_eval_embed <- function(CO_file,
                            data_type = 1,
                            HAM_file = NULL,
                            ARP_file= NULL,
-                           normalize = TRUE) {
+                           normalize = TRUE,
+                           labels = NULL) {
       
   
   # Get Summary
@@ -83,10 +84,13 @@ get_eval_embed <- function(CO_file,
   # Get Time
   start_t <- Sys.time()
   
+  # Filter Dimensions
+  dims <- dims[which(dims <= DIM_MAX)]
+  
   # Run
   cat("\n-------------------------------------------------------------------------\n")
   cat("\n")
-  cat(paste0("Dimensions Setting:\n", paste(dims, collapse=", ")))
+  cat(paste0("Dimensions Setting:\n", paste(dims, collapse=", "), "  (Dimension greater than ",  DIM_MAX, " will be ignore)"))
   cat(paste0("\n\nNote: It may take hours to run depending on data size and your hardware.\n"))
   
   # Generate SPPMI & SVD from cooc
@@ -108,7 +112,6 @@ get_eval_embed <- function(CO_file,
   
   cat("\nCalculating SVD...")
   t <- Sys.time()
-  SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
   SVD <- getSVD(SPPMI)
   t_cost <- round(as.numeric(difftime(Sys.time(), t, units = "mins")), 2)
   cat(paste0("\n(", t_cost, " mins)\n"))
@@ -200,9 +203,6 @@ get_eval_embed <- function(CO_file,
 get_report <- function(summary,
                        plot_val = "auc",
                        knit_format = "html",
-                       labels = c("PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)",
-                                   "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)",
-                                   "PheCode-LAB(rela)"),
                        split_patterns = list("Similarity" = "(sim)", 
                                               "Relation" = "(rela)")) {
   

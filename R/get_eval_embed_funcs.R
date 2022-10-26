@@ -1,4 +1,8 @@
 
+# Global Params
+DIM_MAX <- 2000           # Maximum limit of embedding dimension
+ARP_CODI_IDX <- 1:9            # id range for codi items in all relation pairs file
+
 # Functions To Obtain SPPMI from cooc
 #########################################################################
 #' Find Two level LP Codes for LOINC Codes
@@ -289,7 +293,7 @@ ROC_id = function(embed, Boot){
   }))
   p = c(p1[1:n],p2[1:n])
   
-  roc0 = roc(y, p)
+  roc0 = pROC::roc(y, p)
   cut0 = as.numeric(quantile(p2,0.99))
   cut1 = as.numeric(quantile(p2,0.95))
   cut2 = as.numeric(quantile(p2,0.9))
@@ -427,9 +431,12 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normal
 #' Similar to function \code{Evaluate}, but for codi pairs only.
 #' 
 #' @inheritParams Evaluate
+#' @param labels A character vector of labels in evaluations summary. Values can be 
+#' \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
+#' "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} 
 #' @return A list.
 #' @export
-Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE){
+Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE, labels=NULL){
   if(normalize){
     embed = embed/apply(embed,1,norm,'2')
   }
@@ -444,15 +451,17 @@ Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, n
     })
   }
   k = "code_code"
-  anslist = lapply(1:28, function(i){
+  anslist = lapply(ARP_CODI_IDX, function(i){
     pairs = AllRelationPairs[[k]]
     pairs = pairs[which(pairs$id==i),]
     return(evalu_part(embed, pairs))
   })
   ans = do.call("rbind", lapply(anslist, function(x) x))
   ans = as.data.frame(ans)
-  rownames(ans) = tn$name
-  pairtype = tn$type
+  rownames(ans) = tn$name[ARP_CODI_IDX]
+  pairtype = tn$type[ARP_CODI_IDX]
+  ans <- ans[which(pairtype %in% c("similarity", "related")), ]   # YO - filter out rows with "similarity" & "related"
+  if (!is.null(labels)) ans <- ans[labels, ]                      # YO - filter out rows by labels, by default no filtering
   id = which(pairtype=="similarity")
   ans = rbind(ans, apply(ans[id,],2,weighted.mean,ans[id,1]))
   ans[nrow(ans),1] = sum(ans[id,1])

@@ -19,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```{r, echo=FALSE}
   
 # get plot data
-df_plot <- get_plot_data(summary, col = plot_val, labels = labels)
+df_plot <- get_plot_data(summary, col = plot_val)
 
 # split data by group (Similarity, Relation, Others)
 data_split <-  split_data(df_plot, patterns = split_patterns)
@@ -37,7 +37,7 @@ names(data_reshape) <- names(data_split)
 ### Similarity
 ```{r, echo=FALSE}
 if (is.null(data_reshape$Similarity)) {
-  cat("Not contents.")
+  cat("No contents.")
 } else data_reshape$Similarity %>% plt(y = plot_val, method = "plotly")
 ```
 <br/><br/><br/>
@@ -45,7 +45,7 @@ if (is.null(data_reshape$Similarity)) {
 ### Relation
 ```{r, echo=FALSE}
 if (is.null(data_reshape$Relation)) {
-  cat("Not contents.")
+  cat("No contents.")
 } else data_reshape$Relation %>% plt(y = plot_val, method = "plotly")
 ```
 <br/><br/><br/>
@@ -53,7 +53,7 @@ if (is.null(data_reshape$Relation)) {
 ### Other
 ```{r, echo=FALSE}
 if (is.null(data_reshape$Other)) {
-  cat("Not contents.")
+  cat("No contents.")
 } else data_reshape$Other %>% plt(y = plot_val, method = "plotly")
 ```
 <br/><br/><br/>

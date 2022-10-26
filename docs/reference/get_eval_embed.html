@@ -54,7 +54,8 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
 <span>  data_type <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  HAM_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ARP_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -100,6 +101,12 @@ If a file name is offered, it'll read it instead and replace the default file</p
 <dt>normalize</dt>
 <dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding before evaluation or not.
 For evaluation purpose only, the final embedding result will NOT be normalized no matter what.</p></dd>
+
+
+<dt>labels</dt>
+<dd><p>A character vector of labels in evaluations summary. Values can be 
+<code>"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
+"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"</code></p></dd>
 
 </dl></div>
     <div id="value">

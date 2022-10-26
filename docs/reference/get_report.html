@@ -52,8 +52,6 @@ Report format can be chosen in parameter <code>knit_format</code>.</p>
 <span>  <span class="va">summary</span>,</span>
 <span>  plot_val <span class="op">=</span> <span class="st">"auc"</span>,</span>
 <span>  knit_format <span class="op">=</span> <span class="st">"html"</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PheCode-PheCode(sim)"</span>, <span class="st">"RXNORM-RXNORM(sim)"</span>, <span class="st">"LAB-LAB(sim)"</span>,</span>
-<span>    <span class="st">"PheCode-PheCode(rela)"</span>, <span class="st">"PheCode-RXNORM(rela)"</span>, <span class="st">"PheCode-LAB(rela)"</span><span class="op">)</span>,</span>
 <span>  split_patterns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>Similarity <span class="op">=</span> <span class="st">"(sim)"</span>, Relation <span class="op">=</span> <span class="st">"(rela)"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -73,12 +71,12 @@ Options could be: #"pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01"
 <dd><p>Format of plot report, "pdf" or "html".</p></dd>
 
 
-<dt>labels</dt>
-<dd><p>Labels to be used in plots, options are the row names of summary evaluation dataframes.</p></dd>
-
-
 <dt>split_patterns</dt>
 <dd><p>Pattern to split lablels, normally not changed.</p></dd>
+
+
+<dt>labels</dt>
+<dd><p>Labels to be used in plots, options are the row names of summary evaluation dataframes.</p></dd>
 
 </dl></div>
 

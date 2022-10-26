@@ -12,7 +12,8 @@ get_eval_embed(
   data_type = 1,
   HAM_file = NULL,
   ARP_file = NULL,
-  normalize = TRUE
+  normalize = TRUE,
+  labels = NULL
 )
 }
 \arguments{
@@ -47,6 +48,10 @@ If a file name is offered, it'll read it instead and replace the default file}
 
 \item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
 For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
+
+\item{labels}{A character vector of labels in evaluations summary. Values can be 
+\code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
+"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"}}
 }
 \value{
 A list of infomation of meta-data, embedding & evaluation result. It will 
