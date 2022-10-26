@@ -40,6 +40,9 @@
     <loc>/reference/getSPPMI.html</loc>
   </url>
   <url>
+    <loc>/reference/getSVD.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_embed.html</loc>
   </url>
   <url>
@@ -59,6 +62,9 @@
   </url>
   <url>
     <loc>/reference/map_CO.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pipe.html</loc>
   </url>
   <url>
     <loc>/reference/plt.html</loc>

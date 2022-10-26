@@ -6,12 +6,13 @@
 \usage{
 get_eval_embed(
   CO_file,
-  ARP_file,
   dims,
-  CO_dict_file = NULL,
   out_dir = NULL,
+  CO_dict_file = NULL,
+  data_type = 1,
   HAM_file = NULL,
-  data_type = 1
+  ARP_file = NULL,
+  normalize = TRUE
 )
 }
 \arguments{
@@ -25,9 +26,9 @@ The data should be a table with 3 columns V1, V2, V3:
 Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
-\item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
 \item{dims}{A vector of numeric values for dimension.}
+
+\item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 
 \item{CO_dict_file}{A data file with two columns, where:
 \itemize{
@@ -36,13 +37,16 @@ from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 }
 File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
-\item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
+\item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
 
 \item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 By default it's set to \code{NULL} and read the default file within the package. 
 If a file name is offered, it'll read it instead and replace the default file}
 
-\item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
+\item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
+
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
+For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
 }
 \value{
 A list of infomation of meta-data, embedding & evaluation result. It will 

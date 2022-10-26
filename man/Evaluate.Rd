@@ -4,21 +4,30 @@
 \alias{Evaluate}
 \title{Evaluate The Embedding (Codi & CUI)}
 \usage{
-Evaluate(embed, AllRelationPairs, evatype = "all", prop = 0.3)
+Evaluate(
+  embed,
+  AllRelationPairs,
+  evatype = "all",
+  prop = 0.3,
+  normalize = TRUE
+)
 }
 \arguments{
 \item{embed}{Embedding, should be normed, rownames are code names.}
 
-\item{AllRelationPairs}{Construct from get_relation_dict.R.}
+\item{AllRelationPairs}{All relation pairs dataframe.}
 
-\item{evatype}{Can be "train", "test", all the other character would be ignored.}
-
-\item{prop}{There are 3 scenarios:
+\item{evatype}{Can be "train", "test", all the other character would be ignored.
 \itemize{
 \item{If \code{evatype="train"}, choose first \code{(prop * 100)}\% pairs as training pairs.}
 \item{If \code{evatype="test"}, choose last \code{(prop * 100)}\% pairs as test pairs.}
 \item{Otherwise, using all pairs to evaluate the embedding.}
 }}
+
+\item{prop}{There are 3 scenarios:}
+
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
+For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
 }
 \value{
 A list.
@@ -33,3 +42,4 @@ Evaluate The Embedding (Codi & CUI)
 \item{\code{fulltable}: The full information of subtype pairs, including cut, TPR, etc...}
 }
 }
+\keyword{internal}

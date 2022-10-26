@@ -10,13 +10,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ## Description
 
-For each dimension value, the process of embedding generation & evaluation will take about **26** to **30** mins depending on value size.<br/><br/>
-
 **Summary Data File:** `r summary_file`.<br/>
 **Dimension Setting:** `r paste(dims, collapse = ", ")`.<br/>
 **Co-occurrence File:** `r CO_file`.<br/>
-**Multi-axial File:** `r HAM_file`.<br/>
-**All Relation Pairs File:** `r ARP_file`.<br/>
 **Evaluation Metric:** `r plot_val`.<br/><br/>
 
 

@@ -4,16 +4,16 @@
 \alias{get_embed}
 \title{Getting embedding from svd}
 \usage{
-get_embed(mysvd, d = 2000, normalize = TRUE)
+get_embed(mysvd, d = 2000)
 }
 \arguments{
 \item{mysvd}{The svd result.}
 
 \item{d}{Dimension of the final embedding.}
-
-\item{normalize}{TRUE or FALSE, to normalize embedding or not.}
+}
+\value{
+A dataframe of embedding.
 }
 \description{
 Getting embedding from svd
 }
-\keyword{internal}

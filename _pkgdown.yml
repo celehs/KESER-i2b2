@@ -9,11 +9,12 @@ reference:
   contents: 
   - get_eval_embed
   - get_report
-  - read_file
+  - get_rollup_dict
+  - getSPPMI
+  - getSVD
+  - get_embed
   - Evaluate
   - Evaluate_codi 
-  - getembedding
-  - getSPPMI
-  - get_rollup_dict
+  - read_file
   - map_CO
 

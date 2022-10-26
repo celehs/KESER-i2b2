@@ -13,12 +13,14 @@ Depends:
     R (>= 3.3.0)
 Imports:
     dplyr,
+	magrittr,	
 	pROC,
 	plotly,
 	ggplot2,
 	rmarkdown,
 	DT,
 	readr,
-	arrow
+	arrow,
+	rsvd
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1

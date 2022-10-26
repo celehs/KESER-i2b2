@@ -26,7 +26,7 @@ This is a package to:
 
 You can install the development version from GitHub with:
 
-``` r
+```{r eval=FALSE}
 install.packages("remotes")
 remotes::install_github("celehs/KESER-i2b2")
 library(KESER.i2b2)
@@ -34,7 +34,7 @@ library(KESER.i2b2)
 
 If you can't install it, alternative opntion is to download the repo and use `devtools::load_all()` to load the package. 
 
-``` r
+```{r eval=FALSE}
 install.packages("devtools")
 setwd("D:\\Projects\\harvard\\keser-i2b2")     # Set to your path
 devtools::load_all()    
@@ -44,26 +44,22 @@ devtools::load_all()
 
 Make sure you have the following files available:
 
-* Relation pairs file, such as `AllRelationPairsWithNull.Rdata`
-
 * Co-occurrence matrix file, such as `rpdr_code_cooccurrence_victor_2019.csv`
 
 * Co-occurrence matrix dict file (optional), such as `UPMC_AD_wordindex_mapping_datainfo.csv`
 
 **Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`. 
 
-Then, You can tune the dimensions on variable `dims`, each dimension may take 26-30 mins to run. 
+Then, You can tune the dimensions on variable `dims`.
 
 ### Set up Parameters
 
 For the file paths, change it base on your file locations.
 
 ```{r eval=FALSE}
-CO_file <- "dungeon//data//rpdr_code_cooccurrence_victor_2019.csv"  # Co-occurrence File: .csv/.parquet/.Rdata
-ARP_file <- "dungeon//data//AllRelationPairsWithNull.Rdata"         # All Relation Pairs File: .csv/.parquet/.Rdata  
+CO_file <- "dungeon//data//AD_cooccurence_result_1019.parquet"  # Co-occurrence File: .csv/.parquet/.Rdata
 dims <- seq(200, 1000, 200)                                         # Dimension Setting
 out_dir <- NULL                                                     # Output folder setting -  If NULL All Outputs Will Be At: working_dir/output
-data_type <- 1                                                      # Input Data Type Setting, Codi Only:1, Codi & CUI: 2 
 ```
 
 
@@ -72,16 +68,16 @@ data_type <- 1                                                      # Input Data
 If your Co-occurrence matrix file has code pairs, a dictionary is not needed:
 
 ```{r eval=FALSE}
-summary <- get_eval_embed(CO_file, ARP_file, dims, out_dir)
+summary <- get_eval_embed(CO_file, dims, out_dir)
 ```
 
 Otherwise, if there's no code pairs but index, a dictionary `CO_dict_file` is needed: 
 
 ```{r eval=FALSE}
-summary <- get_eval_embed(CO_file, ARP_file, dims, CO_dict_file = "UPMC_AD_wordindex_mapping_datainfo.csv", out_dir)    # Replace your dict file here 
+summary <- get_eval_embed(CO_file, dims, out_dir, CO_dict_file = "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv")    # Replace your dict file here 
 ```
 
-The output of `get_eval_embed` is a list includes meta-data, embedding & evaluation results. The list will also be saved as `.Rdata`. In our testing case, each dimension value will take around **26** to **30** mins depending on actual data. 
+The output of `get_eval_embed` is a list includes meta-data, embedding & evaluation results. The list will also be saved as `.Rdata`. It may take hours to run depending on your data size and hardware.
 
 #### Generate Plot Report
 

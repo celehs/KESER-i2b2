@@ -44,7 +44,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Evaluate</span><span class="op">(</span><span class="va">embed</span>, <span class="va">AllRelationPairs</span>, evatype <span class="op">=</span> <span class="st">"all"</span>, prop <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">Evaluate</span><span class="op">(</span></span>
+<span>  <span class="va">embed</span>,</span>
+<span>  <span class="va">AllRelationPairs</span>,</span>
+<span>  evatype <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  prop <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -54,18 +60,23 @@
 
 
 <dt>AllRelationPairs</dt>
-<dd><p>Construct from get_relation_dict.R.</p></dd>
+<dd><p>All relation pairs dataframe.</p></dd>
 
 
 <dt>evatype</dt>
-<dd><p>Can be "train", "test", all the other character would be ignored.</p></dd>
-
-
-<dt>prop</dt>
-<dd><p>There are 3 scenarios:</p><ul><li><p>If <code>evatype="train"</code>, choose first <code>(prop * 100)</code>% pairs as training pairs.</p></li>
+<dd><p>Can be "train", "test", all the other character would be ignored.</p><ul><li><p>If <code>evatype="train"</code>, choose first <code>(prop * 100)</code>% pairs as training pairs.</p></li>
 <li><p>If <code>evatype="test"</code>, choose last <code>(prop * 100)</code>% pairs as test pairs.</p></li>
 <li><p>Otherwise, using all pairs to evaluate the embedding.</p></li>
 </ul></dd>
+
+
+<dt>prop</dt>
+<dd><p>There are 3 scenarios:</p></dd>
+
+
+<dt>normalize</dt>
+<dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding before evaluation or not.
+For evaluation purpose only, the final embedding result will NOT be normalized no matter what.</p></dd>
 
 </dl></div>
     <div id="value">

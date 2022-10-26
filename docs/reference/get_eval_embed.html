@@ -48,12 +48,13 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_eval_embed</span><span class="op">(</span></span>
 <span>  <span class="va">CO_file</span>,</span>
-<span>  <span class="va">ARP_file</span>,</span>
 <span>  <span class="va">dims</span>,</span>
-<span>  CO_dict_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CO_dict_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data_type <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  HAM_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data_type <span class="op">=</span> <span class="fl">1</span></span>
+<span>  ARP_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -68,12 +69,12 @@ The data should be a table with 3 columns V1, V2, V3:</p><ul><li><p><code>V1</co
 from id to code pair is needed. Please see <code>CO_dict_file</code> for details.</p></dd>
 
 
-<dt>ARP_file</dt>
-<dd><p>All relation pairs data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
-
-
 <dt>dims</dt>
 <dd><p>A vector of numeric values for dimension.</p></dd>
+
+
+<dt>out_dir</dt>
+<dd><p>Output folder, if <code>NULL</code> then by default set to your_working_directory/output.</p></dd>
 
 
 <dt>CO_dict_file</dt>
@@ -82,8 +83,8 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 </ul><p>File format can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
 
 
-<dt>out_dir</dt>
-<dd><p>Output folder, if <code>NULL</code> then by default set to your_working_directory/output.</p></dd>
+<dt>data_type</dt>
+<dd><p>If data Does not contain CUI codes, set as <code>1</code>. Otherwise, set as <code>2</code>.</p></dd>
 
 
 <dt>HAM_file</dt>
@@ -92,8 +93,13 @@ By default it's set to <code>NULL</code> and read the default file within the pa
 If a file name is offered, it'll read it instead and replace the default file</p></dd>
 
 
-<dt>data_type</dt>
-<dd><p>If data Does not contain CUI codes, set as <code>1</code>. Otherwise, set as <code>2</code>.</p></dd>
+<dt>ARP_file</dt>
+<dd><p>All relation pairs data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
+
+
+<dt>normalize</dt>
+<dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding before evaluation or not.
+For evaluation purpose only, the final embedding result will NOT be normalized no matter what.</p></dd>
 
 </dl></div>
     <div id="value">

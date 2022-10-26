@@ -1,12 +1,3 @@
-library(dplyr)
-library(pROC)
-library(plotly)
-library(ggplot2)
-library(rmarkdown)
-library(DT)
-library(readr)
-library(arrow)
-
 
 # Functions To Obtain SPPMI from cooc
 #########################################################################
@@ -245,24 +236,6 @@ getSPPMI = function(cooc, dict, code_LPcode){
   #SPPMI = SPPMI[a,a]
   return(SPPMI)
 }
-
-
-#' Get Embedding from SPPMI Matrix
-#' @param SPPMI The SPPMI matrix obtained from the previous section.
-#' @param d A numerical shows the target dimension of embedding.
-#' @return A data matrix.
-#' @export
-getembedding = function(SPPMI, d = 1500){
-  a = which(apply(SPPMI,1,sum)!=0)
-  SPPMI = SPPMI[a,a]
-  fit.A <- svd(SPPMI)
-  
-  idp = which(sign(fit.A$u[1,]) == sign(fit.A$v[1,]))
-  d = min(d,length(idp))
-  embed <- fit.A$u[,idp[1:d]] %*% diag(sqrt(fit.A$d[idp[1:d]]))
-  rownames(embed) = colnames(SPPMI)
-  return(embed)
-}
 #########################################################################
 
 
@@ -271,20 +244,34 @@ getembedding = function(SPPMI, d = 1500){
 
 # Embed Generation Evaluation (by AUC)
 #########################################################################
+#' Getting randomized svd from SPPI.
+#' 
+#' @param SPPMI The SPPMI matrix obtained from \code{getSPPMI}.
+#' @return A list of matrix.
+#' \itemize{
+#' \item{\code{d} Array, singular values.}
+#' \item{\code{u} Array, left singular vectors.}
+#' \item{\code{v} Array, right singular vectors.}
+#' }
+getSVD <- function(SPPMI) {
+  a = which(apply(SPPMI,1,sum)!=0)
+  SPPMI = SPPMI[a,a]
+  set.seed(1)
+  fit.A <- rsvd::rsvd(SPPMI)
+  return(fit.A)
+}
+
+
 #' Getting embedding from svd
 #' 
 #' @param mysvd The svd result.
 #' @param d Dimension of the final embedding.
-#' @param normalize TRUE or FALSE, to normalize embedding or not.
-#' @keywords internal
+#' @return A dataframe of embedding.
 #' @export
-get_embed = function(mysvd, d=2000, normalize=TRUE){
+get_embed = function(mysvd, d=2000){
   id = which(sign(mysvd$u[1,])==sign(mysvd$v[1,]))
   id = id[1:min(d,length(id))]
   embed = mysvd$u[,id]%*%diag(sqrt(mysvd$d[id]))
-  if(normalize){
-    embed = embed/apply(embed,1,norm,'2')
-  }
   rownames(embed) = rownames(mysvd$u)
   return(embed)
 }
@@ -365,18 +352,20 @@ get_type = function(AllRelationPairs){
 
 #' Evaluate The Embedding (Codi & CUI)
 #' 
+#' 
 #' @param embed Embedding, should be normed, rownames are code names.
-#' @param AllRelationPairs Construct from get_relation_dict.R.
+#' @param AllRelationPairs All relation pairs dataframe.
 #' @param evatype Can be "train", "test", all the other character would be ignored.
-#' @param prop There are 3 scenarios:
 #' \itemize{
 #' \item{If \code{evatype="train"}, choose first \code{(prop * 100)}\% pairs as training pairs.}
 #' \item{If \code{evatype="test"}, choose last \code{(prop * 100)}\% pairs as test pairs.}
 #' \item{Otherwise, using all pairs to evaluate the embedding.}
 #' }
+#' @param prop There are 3 scenarios:
+#' @param normalize \code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
+#' For evaluation purpose only, the final embedding result will NOT be normalized no matter what.
 #' 
 #' @details
-#' 
 #' \itemize{
 #' \item{\code{wei_auc}: The weighted auc of similar pairs, related pairs and CUI-CUI pairs.}
 #' \item{\code{anstable}: The The auc of all subtype pairs.}
@@ -384,8 +373,11 @@ get_type = function(AllRelationPairs){
 #' }
 #' 
 #' @return A list.
-#' @export
-Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
+#' @keywords internal
+Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE){
+  if(normalize){
+    embed = embed/apply(embed,1,norm,'2')
+  }
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
     AllRelationPairs = lapply(AllRelationPairs, function(x){
@@ -425,19 +417,22 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
                                        weighted.mean(wei_auc[2,c(2,4,6)],wei_auc[2,c(1,3,5)])))
   wei_auc = cbind(wei_auc, ave.auc = c(mean(wei_auc[1,c(2,4,6)]),
                                        mean(wei_auc[2,c(2,4,6)])))
-  return(list(wei_auc = as.matrix(wei_auc), 
-              anstable = as.matrix(anstable), 
+  return(list(wei_auc = as.matrix(wei_auc),
+              anstable = as.matrix(anstable),
               fulltable = as.data.frame(fulltable)))
 }
 
 #' Evaluate The Embedding (Codi Only)
 #' 
-#' Similar to function \code{Evaluate}, but just for codi pairs evaluation.
+#' Similar to function \code{Evaluate}, but for codi pairs only.
 #' 
 #' @inheritParams Evaluate
 #' @return A list.
 #' @export
-Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
+Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE){
+  if(normalize){
+    embed = embed/apply(embed,1,norm,'2')
+  }
   tn = get_type(AllRelationPairs)
   if(evatype=="train"){
     AllRelationPairs = lapply(AllRelationPairs, function(x){
@@ -448,7 +443,7 @@ Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3){
       return(x[which(x$training>prop),])
     })
   }
-  k = 3
+  k = "code_code"
   anslist = lapply(1:28, function(i){
     pairs = AllRelationPairs[[k]]
     pairs = pairs[which(pairs$id==i),]
@@ -604,8 +599,8 @@ plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
 #' @export
 read_file <- function(file_name) {
   ext <- strsplit(tolower(file_name), split = "\\.")[[1]][-1]
-  if (ext == "csv") return(readr::read_csv(file_name))
-  if (ext == "parquet") return(arrow::read_parquet(file_name) %>% as.data.frame())
+  if (ext == "csv") return(readr::read_csv(file_name, show_col_types = FALSE))
+  if (ext == "parquet") return(arrow::read_parquet(file_name, show_col_types = FALSE) %>% as.data.frame())
   if (ext == "rdata") {
     var <- load(file_name)
     err_msg <- paste0("Number of variable in '", file_name, "' NOT equal to 1!")

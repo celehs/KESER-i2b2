@@ -3,6 +3,7 @@
 #' \code{get_eval_embed} acts as embedding generation & evaluation from co-occurrence data file.
 #' It returns a list of summary including meta-data, evaluation and embedding itself. 
 #' 
+#' @inheritParams Evaluate_codi
 #' @param CO_file Co-ccurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' The data should be a table with 3 columns V1, V2, V3:
 #' \itemize{
@@ -12,7 +13,6 @@
 #' }
 #' Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 #' from id to code pair is needed. Please see \code{CO_dict_file} for details.
-#' @param ARP_file All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @param dims A vector of numeric values for dimension.
 #' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.
 #' @param CO_dict_file A data file with two columns, where:
@@ -21,21 +21,23 @@
 #' \item{\code{Column 2}: Shows the corresponding id number.}
 #' }
 #' File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.
 #' @param HAM_file Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' By default it's set to \code{NULL} and read the default file within the package. 
 #' If a file name is offered, it'll read it instead and replace the default file
-#' @param data_type If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.
+#' @param ARP_file All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @return A list of infomation of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
 #' 
 #' @export
 get_eval_embed <- function(CO_file, 
-                           ARP_file, 
                            dims,
-                           CO_dict_file = NULL,
                            out_dir = NULL, 
+                           CO_dict_file = NULL,
+                           data_type = 1,
                            HAM_file = NULL,
-                           data_type = 1) {
+                           ARP_file= NULL,
+                           normalize = TRUE) {
       
   
   # Get Summary
@@ -44,20 +46,29 @@ get_eval_embed <- function(CO_file,
   # Set Up Output Folder
   out_dir <- ifelse(is.null(out_dir), file.path(getwd(), "output"), out_dir)
   dir.create(out_dir, showWarnings = FALSE)
+  cat(paste0("\nOutput Folder: ", out_dir))
   
   # Load Data
-  cat("Loading data...\n")
+  cat("\nLoading data...")
   CO <- read_file(CO_file)
-  if (is.null(HAM_file)) MAH <- read_file(file.path("inst", "MAH.Rdata")) else MAH <- read_file(HAM_file)
-  ARP <- read_file(ARP_file)
   
+  # Load HAM_file & ARP_file If Specified
+  if (!is.null(HAM_file)) {
+    cat("\nHierarchy file specified by user.")
+    MAH <- read_file(HAM_file)
+  }
+  if (!is.null(ARP_file)) {
+    cat("\nAll relation pairs file specified by user.")
+    ARP <- read_file(ARP_file)
+  }
+ 
   # Check & Map CO
   if (class(CO[[1]]) == "integer") {
-    if (is.na(CO_dict_file)) stop("Please provide CO dict.") else {
+    if (is.null(CO_dict_file)) stop("Please provide CO dict.") else {
       
       # Map CO If CO Dict Passed
       CO_dict <- read_file(CO_dict_file)
-      cat("\nMapping CO codes from CO dict...\n")
+      cat("\nMapping CO codes from CO dict...")
       CO <- map_CO(CO, CO_dict)
     }
   }
@@ -66,8 +77,8 @@ get_eval_embed <- function(CO_file,
   colnames(CO) <- c("V1", "V2", "V3")
   
   # Align Codes
-  cat("Aligning codes...")
-  CO <- CO %>% dplyr::mutate(across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))  
+  cat("\nAligning codes...")
+  CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))  
   
   # Get Time
   start_t <- Sys.time()
@@ -76,21 +87,31 @@ get_eval_embed <- function(CO_file,
   cat("\n-------------------------------------------------------------------------\n")
   cat("\n")
   cat(paste0("Dimensions Setting:\n", paste(dims, collapse=", ")))
-  cat(paste0("\n\nTotal Time Cost Estimation: ", round(length(dims) * 30 / 60, 2), " Hours\n"))
+  cat(paste0("\n\nNote: It may take hours to run depending on data size and your hardware.\n"))
   
-  # Generate SPPMI from cooc
+  # Generate SPPMI & SVD from cooc
   #########################################################################
   
   # Get Unique Values for First two Columns of CO
   CO_unique <- unique(c(CO$V1, CO$V2))
   
   # Obtain The Roll Up Dictionary For LOINC Codes:
-  cat("\nGetting rollup dict...")
-  code_LPcode = get_rollup_dict(CO_unique, MAH)
+  cat("\nGetting rollup dict...\n")
+  code_LPcode <- get_rollup_dict(CO_unique, MAH)
   
   # Calculate SPPMI
   cat("\nCalculating SPPMI...")
-  SPPMI = getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
+  t <- Sys.time()
+  SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
+  t_cost <- round(as.numeric(difftime(t, Sys.time(), units = "mins")), 2)
+  cat(paste0("(", t_cost, " mins)\n"))
+  
+  cat("\nCalculating SVD...")
+  t <- Sys.time()
+  SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
+  SVD <- getSVD(SPPMI)
+  t_cost <- round(as.numeric(difftime(t, Sys.time(), units = "mins")), 2)
+  cat(paste0("(", t_cost, " mins)\n"))
   #########################################################################
   
   # Embedding Generation & Calculation
@@ -107,7 +128,8 @@ get_eval_embed <- function(CO_file,
     # Get Embedding
     #########################################################################
     cat("\nGetting embedding...")
-    embed = getembedding(SPPMI, dim)
+    browser()
+    embed = get_embed(SVD, dim)
     #########################################################################
     
     
@@ -116,9 +138,9 @@ get_eval_embed <- function(CO_file,
     # Evaluate Embedding
     cat("\nEvaluating...")
     if (data_type == 1) {
-      ans = Evaluate_codi(embed, AllRelationPairs = ARP)  # data_type == 1: codi only
+      ans = Evaluate_codi(embed, AllRelationPairs = ARP, normalize = normalize)  # data_type == 1: codi only
     } else if (data_type == 2) {
-      ans = Evaluate(embed, AllRelationPairs = ARP)       # data_type == 2: codi & CUI
+      ans = Evaluate(embed, AllRelationPairs = ARP, normalize = normalize)       # data_type == 2: codi & CUI
     } else stop("Invalid Value: 'data_type' should be 1 or 2.")
     #########################################################################
     
@@ -145,13 +167,10 @@ get_eval_embed <- function(CO_file,
   summary_file <- paste0("summary-", dims[1], "-", dims[length(dims)], 
                          "-", dims[2]-dims[1],'.Rdata')
   summary <- list("meta_data" = list("CO_file" = CO_file,
-                                 "HAM_file" = HAM_file,
-                                 "ARP_file" = ARP_file,
                                  "dims" = dims,
                                  "out_dir" = out_dir,
                                  "summary_file" = summary_file),
                   "summary" = summary)
-  
   save(summary, file = file.path(out_dir, summary_file))
   return(summary)
   ################################################################################
@@ -198,8 +217,6 @@ get_report <- function(summary,
   # Other Variables
   summary_file <- summary[["meta_data"]][["summary_file"]]
   CO_file <- summary[["meta_data"]][["CO_file"]]
-  HAM_file <- summary[["meta_data"]][["HAM_file"]]
-  ARP_file <- summary[["meta_data"]][["ARP_file"]]
   
   # Generate Output file
   dims <- summary[["meta_data"]][["dims"]]
