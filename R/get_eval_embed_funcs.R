@@ -433,7 +433,8 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normal
 #' @inheritParams Evaluate
 #' @param labels A character vector of labels in evaluations summary. Values can be 
 #' \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
-#' "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} 
+#' "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} .
+#' If \code{NULL} then all labels will be used.
 #' @return A list.
 #' @export
 Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE, labels=NULL){

@@ -51,7 +51,8 @@ For evaluation purpose only, the final embedding result will NOT be normalized n
 
 \item{labels}{A character vector of labels in evaluations summary. Values can be 
 \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
-"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"}}
+"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} .
+If \code{NULL} then all labels will be used.}
 }
 \value{
 A list of infomation of meta-data, embedding & evaluation result. It will 
