@@ -131,7 +131,6 @@ get_eval_embed <- function(CO_file,
     # Get Embedding
     #########################################################################
     cat("\nGetting embedding...")
-    browser()
     embed = get_embed(SVD, dim)
     #########################################################################
     
@@ -205,6 +204,10 @@ get_report <- function(summary,
                        knit_format = "html",
                        split_patterns = list("Similarity" = "(sim)", 
                                               "Relation" = "(rela)")) {
+  
+  # Param Check
+  vals <- c("pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05", "TPR/0.1")
+  if (!(plot_val %in% vals)) stop("Invalid plot_val: ", plot_val, " \nValid values: ", vals)
   
   # Rmd Files
   rmd_file <- list("html" = "summary_html.Rmd",

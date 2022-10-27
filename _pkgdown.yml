@@ -13,7 +13,6 @@ reference:
   - getSPPMI
   - getSVD
   - get_embed
-  - Evaluate
   - Evaluate_codi 
   - read_file
   - map_CO

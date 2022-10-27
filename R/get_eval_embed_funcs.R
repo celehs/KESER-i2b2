@@ -1,6 +1,6 @@
 
 # Global Params
-DIM_MAX <- 2000           # Maximum limit of embedding dimension
+DIM_MAX <- 2000                # Maximum limit of embedding dimension
 ARP_CODI_IDX <- 1:9            # id range for codi items in all relation pairs file
 
 # Functions To Obtain SPPMI from cooc
@@ -262,6 +262,7 @@ getSVD <- function(SPPMI) {
   SPPMI = SPPMI[a,a]
   set.seed(1)
   fit.A <- rsvd::rsvd(SPPMI)
+  rownames(fit.A$u) <- rownames(SPPMI)
   return(fit.A)
 }
 
@@ -428,8 +429,6 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normal
 
 #' Evaluate The Embedding (Codi Only)
 #' 
-#' Similar to function \code{Evaluate}, but for codi pairs only.
-#' 
 #' @inheritParams Evaluate
 #' @param labels A character vector of labels in evaluations summary. Values can be 
 #' \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
@@ -438,6 +437,7 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normal
 #' @return A list.
 #' @export
 Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE, labels=NULL){
+  
   if(normalize){
     embed = embed/apply(embed,1,norm,'2')
   }
