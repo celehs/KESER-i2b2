@@ -207,7 +207,7 @@ get_report <- function(summary,
   
   # Param Check
   vals <- c("pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05", "TPR/0.1")
-  if (!(plot_val %in% vals)) stop("Invalid plot_val: ", plot_val, " \nValid values: ", vals)
+  if (!(plot_val %in% vals)) stop(paste0("Invalid plot_val: ", plot_val, " \nValid values: ", paste(vals, collapse = ' ')))
   
   # Rmd Files
   rmd_file <- list("html" = "summary_html.Rmd",
@@ -225,7 +225,9 @@ get_report <- function(summary,
   dims <- summary[["meta_data"]][["dims"]]
   output_file <- paste0("summary-", dims[1], "-", dims[length(dims)],
                         "-", dims[2]-dims[1], '.', knit_format)
-  rmarkdown::render(file.path("Rmd", rmd_file[[knit_format]]), output_file = file.path(out_dir, output_file))
+  rmd_file <- system.file("rmd", rmd_file[[knit_format]], package = PKG.NAME)
+  out_file <- file.path(out_dir, output_file)
+  rmarkdown::render(rmd_file, output_file = out_file)
   cat("\nOutput sumamry file saved as: ", file.path(out_dir, output_file))
 }
   
