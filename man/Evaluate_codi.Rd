@@ -39,5 +39,5 @@ If \code{NULL} then all labels will be used.}
 A list.
 }
 \description{
-Similar to function \code{Evaluate}, but for codi pairs only.
+Evaluate The Embedding (Codi Only)
 }
