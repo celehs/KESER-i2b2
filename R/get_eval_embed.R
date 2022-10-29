@@ -212,8 +212,7 @@ get_report <- function(summary,
                        plot_val = "auc",
                        knit_format = "html",
                        split_patterns = list("Similarity" = "(sim)", 
-                                              "Relation" = "(rela)"),
-                       save_dir = NULL) {
+                                              "Relation" = "(rela)")) {
   
   # Param Check
   vals <- c("pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05", "TPR/0.1")
