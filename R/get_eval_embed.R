@@ -225,17 +225,9 @@ get_report <- function(summary,
   
   # Set Up Output Folder
   out_dir <- summary[["meta_data"]][["out_dir"]]
-  if (!dir.exists(out_dir)) {
-    out_dir <-paste0(getwd(), out_dir)
-    dir.create(out_dir, showWarnings = FALSE)
-  }
-  if (!dir.exists(out_dir)) {
-    if (is.null(save_dir)) stop(paste0(out_dir, "not exist, please specify a full path in paramerter save_dir.")) else {
-      out_dir <- path_chk(save_dir)
-      dir.create(out_dir, showWarnings = FALSE)
-    }
-  }
-  
+  if (!dir.exists(out_dir)) out_dir <- file.path(getwd(), out_dir)
+  cat(paste0("\nOutput Folder: ", out_dir, "\n"))
+
   
   # Other Variables
   summary_file <- summary[["meta_data"]][["summary_file"]]
