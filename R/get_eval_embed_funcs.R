@@ -711,14 +711,15 @@ memory_chk <- function(CO) {
 
 #' Function to check path
 #'
-#' @param path An absolute or relative path
+#' @param path An full or relative path.
 #' @keywords internal
+#' @return A full path of input path.
 path_chk <- function(path) {
-  relative <- file.path(getwd(), path)
-  if (dir.exists(dirname(path))) {
+  full_dir <- file.path(getwd(), path)
+  if (dir.exists(dirname(full_dir))) {
+    return(full_dir)
+  } else if(dir.exists(dirname(path))) {
     return(path)
-  } else if(dir.exists(dirname(relative))) {
-    return(relative)
   } else {
     stop(paste0("Path or File Not Found: ", path), ". Please try entering the absolute full path.")
   }

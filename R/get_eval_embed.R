@@ -222,15 +222,10 @@ get_report <- function(summary,
   rmd_file <- list("html" = "summary_html.Rmd",
                    "pdf" =  "summary_pdf.Rmd") 
   
-  # Set Up Output Folder
-  out_dir <- summary[["meta_data"]][["out_dir"]]
-  if (!dir.exists(out_dir)) out_dir <- file.path(getwd(), out_dir)
-  cat(paste0("\nOutput Folder: ", out_dir, "\n"))
-
-  
   # Other Variables
   summary_file <- summary[["meta_data"]][["summary_file"]]
   CO_file <- summary[["meta_data"]][["CO_file"]]
+  out_dir <- summary[["meta_data"]][["out_dir"]]
   
   # Generate Output file
   dims <- summary[["meta_data"]][["dims"]]
