@@ -693,8 +693,8 @@ memory_chk <- function(CO) {
     total_ram <- as.numeric(gsub("\r","",gsub("TotalVisibleMemorySize=","",system('wmic OS get TotalVisibleMemorySize /Value',intern=TRUE)[3])))/1024/1024
     free_ram <- as.numeric(gsub("\r","",gsub("FreePhysicalMemory=","",system('wmic OS get FreePhysicalMemory /Value',intern=TRUE)[3])))/1024/1024
   } else if (os %in% c("Linux", "Darwin")) {
-    total_ram <- system("awk '/MemTotal/ {print $2}' /proc/meminfo ", intern=TRUE)/1024/1024
-    free_ram <- system("awk '/MemFree/ {print $2}' /proc/meminfo ", intern=TRUE)/1024/1024
+    total_ram <- as.numeric(system("awk '/MemTotal/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
+    free_ram <- as.numeric(system("awk '/MemFree/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
   } else {
     cat("\n Unrecognized OS: ", os, ". Memory check ignored.\n")
     return(NULL)
