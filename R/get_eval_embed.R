@@ -223,7 +223,7 @@ get_report <- function(summary,
                    "pdf" =  "summary_pdf.Rmd") 
   
   # Set Up Output Folder
-  out_dir <- summary[["meta_data"]][["out_dir"]]
+  out_dir <- path_chk(summary[["meta_data"]][["out_dir"]])
   dir.create(out_dir, showWarnings = FALSE)
   
   # Other Variables
