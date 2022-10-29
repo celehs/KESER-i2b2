@@ -48,22 +48,22 @@ get_eval_embed <- function(CO_file,
   ################################################################################
   
   # Set Up Output Folder
-  out_dir <- ifelse(is.null(out_dir), file.path(getwd(), "output"), out_dir)
+  out_dir <- ifelse(is.null(out_dir), file.path(getwd(), "output"), path_chk(out_dir))
   dir.create(out_dir, showWarnings = FALSE)
   cat(paste0("\nOutput Folder: ", out_dir))
   
   # Load Data
   cat("\nLoading data...")
-  CO <- read_file(CO_file)
+  CO <- read_file(path_chk(CO_file))
   
   # Load HAM_file & ARP_file If Specified
   if (!is.null(HAM_file)) {
     cat("\nHierarchy file specified by user.")
-    MAH <- read_file(HAM_file)
+    MAH <- read_file(path_chk(HAM_file))
   }
   if (!is.null(ARP_file)) {
     cat("\nAll relation pairs file specified by user.")
-    ARP <- read_file(ARP_file)
+    ARP <- read_file(path_chk(ARP_file))
   }
  
   # Check & Map CO
@@ -71,7 +71,7 @@ get_eval_embed <- function(CO_file,
     if (is.null(CO_dict_file)) stop("Please provide CO dict.") else {
       
       # Map CO If CO Dict Passed
-      CO_dict <- read_file(CO_dict_file)
+      CO_dict <- read_file(path_chk(CO_dict_file))
       cat("\nMapping CO codes from CO dict...")
       CO <- map_CO(CO, CO_dict)
     }

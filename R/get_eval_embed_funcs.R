@@ -708,4 +708,19 @@ memory_chk <- function(CO) {
   if (est_ram > total_ram) stop("Total RAM not enough, please upgrade your physical RAM.")
   if (est_ram > free_ram) stop("Usable RAM not enough, please free up your memory.")
 }
+
+#' Function to check path
+#'
+#' @param path An absolute or relative path
+#' @keywords internal
+path_chk <- function(path) {
+  relative <- file.path(getwd(), path)
+  if (dir.exists(dirname(path))) {
+    return(path)
+  } else if(dir.exists(dirname(relative))) {
+    return(relative)
+  } else {
+    stop(paste0("Path or File Not Found: ", path), ". Please try entering the absolute full path.")
+  }
+}
 #########################################################################
