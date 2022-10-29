@@ -212,7 +212,8 @@ get_report <- function(summary,
                        plot_val = "auc",
                        knit_format = "html",
                        split_patterns = list("Similarity" = "(sim)", 
-                                              "Relation" = "(rela)")) {
+                                              "Relation" = "(rela)"),
+                       save_dir = NULL) {
   
   # Param Check
   vals <- c("pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05", "TPR/0.1")
@@ -223,8 +224,18 @@ get_report <- function(summary,
                    "pdf" =  "summary_pdf.Rmd") 
   
   # Set Up Output Folder
-  out_dir <- path_chk(summary[["meta_data"]][["out_dir"]])
-  dir.create(out_dir, showWarnings = FALSE)
+  out_dir <- summary[["meta_data"]][["out_dir"]]
+  if (!dir.exists(out_dir)) {
+    out_dir <-paste0(getwd(), out_dir)
+    dir.create(out_dir, showWarnings = FALSE)
+  }
+  if (!dir.exists(out_dir)) {
+    if (is.null(save_dir)) stop(paste0(out_dir, "not exist, please specify a full path in paramerter save_dir.")) else {
+      out_dir <- path_chk(save_dir)
+      dir.create(out_dir, showWarnings = FALSE)
+    }
+  }
+  
   
   # Other Variables
   summary_file <- summary[["meta_data"]][["summary_file"]]
