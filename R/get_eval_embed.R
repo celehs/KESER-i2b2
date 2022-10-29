@@ -238,7 +238,7 @@ get_report <- function(summary,
                         "-", dims[2]-dims[1], '.', knit_format)
   rmd_file <- system.file("rmd", rmd_file[[knit_format]], package = PKG.NAME)
   out_file <- file.path(out_dir, output_file)
-  # rmarkdown::render(rmd_file, output_file = out_file)
+  rmarkdown::render(rmd_file, output_file = out_file)
   cat("\nOutput sumamry file saved as: ", file.path(out_dir, output_file))
 }
   
