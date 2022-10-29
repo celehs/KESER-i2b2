@@ -7,7 +7,7 @@
 map_CO(CO, CO_dict)
 }
 \arguments{
-\item{CO}{COOC matrix, Should be a triple form.
+\item{CO}{COOC (Co-occurrence) matrix, Should be a triple form.
 \itemize{
 \item{\code{V1}}: Shows the row id (code id).
 \item{\code{V2}}: Shows the col id (code id).

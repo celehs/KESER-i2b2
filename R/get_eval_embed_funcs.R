@@ -666,6 +666,7 @@ get_unique_codes <- function(CO) {
 #' Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @param freq_min Frequency cutoff, codes with frequency count below \code{freq_min}
 #' will be removed.
+#' @export
 clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
   if (is.null(freq_file)) {
     cat("\nFrequency file not offered, no codes will be removed.\n")

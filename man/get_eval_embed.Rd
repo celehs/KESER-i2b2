@@ -9,6 +9,8 @@ get_eval_embed(
   dims,
   out_dir = NULL,
   CO_dict_file = NULL,
+  freq_file = NULL,
+  freq_min = 1000,
   data_type = 1,
   HAM_file = NULL,
   ARP_file = NULL,
@@ -17,7 +19,7 @@ get_eval_embed(
 )
 }
 \arguments{
-\item{CO_file}{Co-ccurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+\item{CO_file}{Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 The data should be a table with 3 columns V1, V2, V3:
 \itemize{
 \item{\code{V1}}: Shows the row id (code id) or row code pair.
@@ -38,6 +40,16 @@ from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 }
 File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
+\item{freq_file}{A data file with two columns, where:
+\itemize{
+\item{\code{Column 1}: Shows the name of unique codes.}
+\item{\code{Column 2}: Shows the corresponding frequency counts.}
+}
+Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
+
+\item{freq_min}{Frequency cutoff, codes with frequency count below \code{freq_min}
+will be removed.}
+
 \item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
 
 \item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
@@ -55,7 +67,7 @@ For evaluation purpose only, the final embedding result will NOT be normalized n
 If \code{NULL} then all labels will be used.}
 }
 \value{
-A list of infomation of meta-data, embedding & evaluation result. It will 
+A list of information of meta-data, embedding & evaluation result. It will 
 be saved in \code{out_dir} as \code{.Rdata} file.
 }
 \description{

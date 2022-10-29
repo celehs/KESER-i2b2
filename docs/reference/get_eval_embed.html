@@ -51,6 +51,8 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
 <span>  <span class="va">dims</span>,</span>
 <span>  out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO_dict_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  freq_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  freq_min <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  data_type <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  HAM_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ARP_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -62,7 +64,7 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>CO_file</dt>
-<dd><p>Co-ccurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
+<dd><p>Co-occurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
 The data should be a table with 3 columns V1, V2, V3:</p><ul><li><p><code>V1</code>: Shows the row id (code id) or row code pair.</p></li>
 <li><p><code>V2</code>: Shows the col id (code id) or row code pair..</p></li>
 <li><p><code>V3</code>: Shows the counts for certain pair.</p></li>
@@ -82,6 +84,17 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 <dd><p>A data file with two columns, where:</p><ul><li><p><code>Column 1</code>: Shows the name of code pair.</p></li>
 <li><p><code>Column 2</code>: Shows the corresponding id number.</p></li>
 </ul><p>File format can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
+
+
+<dt>freq_file</dt>
+<dd><p>A data file with two columns, where:</p><ul><li><p><code>Column 1</code>: Shows the name of unique codes.</p></li>
+<li><p><code>Column 2</code>: Shows the corresponding frequency counts.</p></li>
+</ul><p>Format of <code>freq_file</code> can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
+
+
+<dt>freq_min</dt>
+<dd><p>Frequency cutoff, codes with frequency count below <code>freq_min</code>
+will be removed.</p></dd>
 
 
 <dt>data_type</dt>
@@ -114,7 +127,7 @@ If <code>NULL</code> then all labels will be used.</p></dd>
     <h2>Value</h2>
     
 
-<p>A list of infomation of meta-data, embedding &amp; evaluation result. It will 
+<p>A list of information of meta-data, embedding &amp; evaluation result. It will 
 be saved in <code>out_dir</code> as <code>.Rdata</code> file.</p>
     </div>
 

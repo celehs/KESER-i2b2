@@ -32,7 +32,7 @@ remotes::install_github("celehs/KESER-i2b2")
 library(KESER.i2b2)
 ```
 
-If you can't install it, alternative opntion is to download the repo and use `devtools::load_all()` to load the package. 
+If you can't install it, alternative option is to download the repo and use `devtools::load_all()` to load the package. 
 
 ```{r eval=FALSE}
 install.packages("devtools")
@@ -48,13 +48,51 @@ Make sure you have the following files available:
 
 * Co-occurrence matrix dict file (optional), such as `UPMC_AD_wordindex_mapping_datainfo.csv`
 
+* Co-occurrence matrix code frequency counts file (optional), such as `UPMC_AD_code_freq.csv`
+
 **Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`. 
 
-Then, You can tune the dimensions on variable `dims`.
+### Input File Data Structure Examples
+
+```{r eval=TRUE, include=FALSE, echo=FALSE, results='hide'}
+devtools::load_all()     # load pkg to include internal data
+```
+
+#### Co-occurrence matrix file (with codes):
+
+```{r eval=TRUE, echo=FALSE}
+head(CO_EXAMPLE_CODE)
+```
+
+The first two columns are the names of code. The third column is the count of the code pair.
+
+#### Co-occurrence matrix file (with index):
+
+```{r eval=TRUE, echo=FALSE}
+head(CO_EXAMPLE_INDEX)
+```
+
+The first two columns are the location indexes of code. The third column is the count of the code pair.
+
+#### Co-occurrence matrix dict file:
+
+```{r eval=TRUE, echo=FALSE}
+head(CO_DICT_EXAMPLE)
+```
+
+The first column is the name of code, the second column is the location index. Only use when the input is **Co-occurrence matrix file with index**.
+
+#### Co-occurrence matrix code frequency counts file:
+
+```{r eval=TRUE, echo=FALSE}
+head(CODE_FREQ_EXAMLPE)
+```
+
+The first column is the name of code, the second column is the frequency counts.
 
 ### Set up Parameters
 
-For the file paths, change it base on your file locations.
+For the file paths, change it base on your file locations. You can tune the dimensions on variable `dims`. The output files (`.Rdata` file & report file) will be saved at `out_dir`. If `out_dir = NULL`, it will create a folder called `output` and put it there.
 
 ```{r eval=FALSE}
 CO_file <- "dungeon//data//AD_cooccurence_result_1019.parquet"  # Co-occurrence File: .csv/.parquet/.Rdata
@@ -68,13 +106,30 @@ out_dir <- NULL                                                     # Output fol
 If your Co-occurrence matrix file has code pairs, a dictionary is not needed:
 
 ```{r eval=FALSE}
-summary <- get_eval_embed(CO_file, dims, out_dir)
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir)
 ```
 
 Otherwise, if there's no code pairs but index, a dictionary `CO_dict_file` is needed: 
 
 ```{r eval=FALSE}
-summary <- get_eval_embed(CO_file, dims, out_dir, CO_dict_file = "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv")    # Replace your dict file here 
+CO_dict_file <- "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv"   # Replace your dict file here 
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir, 
+                          CO_dict_file = CO_dict_file)   
+```
+
+Moreover, to further reduce the time cost, a code frequency counts file can be used to remove codes with low frequency. The default cutoff is set to **1000**. To change the cutoff, please refer to documents of function `get_eval_embed`.
+
+```{r eval=FALSE}
+freq_file <- "dungeon//data//UPMC_AD_code_freq.csv"
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir, 
+                          CO_dict_file = CO_dict_file, 
+                          freq_file = freq_file)
 ```
 
 The output of `get_eval_embed` is a list includes meta-data, embedding & evaluation results. The list will also be saved as `.Rdata`. It may take hours to run depending on your data size and hardware.
@@ -110,7 +165,6 @@ View(my_eval)
 The evaluation plots are saved as "Summary-XX-YY-ZZ.html", and the original summary data are saved as "Summary-XX-YY-ZZ.Rdata", where XX stands for starting dimension, YY stands for ending dimension and ZZ stands for Step. 
 
 You can choose a proper dimension and use the corresponding embedding for the next steps.
-
 
 
 See the [Documentation](https://celehs.github.io/KESER-i2b2/) to learn more.

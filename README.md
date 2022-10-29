@@ -21,7 +21,7 @@ remotes::install_github("celehs/KESER-i2b2")
 library(KESER.i2b2)
 ```
 
-If you can’t install it, alternative opntion is to download the repo and
+If you can’t install it, alternative option is to download the repo and
 use `devtools::load_all()` to load the package.
 
 ``` r
@@ -40,13 +40,78 @@ Make sure you have the following files available:
 - Co-occurrence matrix dict file (optional), such as
   `UPMC_AD_wordindex_mapping_datainfo.csv`
 
+- Co-occurrence matrix code frequency counts file (optional), such as
+  `UPMC_AD_code_freq.csv`
+
 **Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`.
 
-Then, You can tune the dimensions on variable `dims`.
+### Input File Data Structure Examples
+
+#### Co-occurrence matrix file (with codes):
+
+    #> # A tibble: 6 x 3
+    #>   i         j           count
+    #>   <chr>     <chr>       <dbl>
+    #> 1 CCS-PCS:1 CCS-PCS:1    6318
+    #> 2 CCS-PCS:1 CCS-PCS:10     14
+    #> 3 CCS-PCS:1 CCS-PCS:100    40
+    #> 4 CCS-PCS:1 CCS-PCS:101     8
+    #> 5 CCS-PCS:1 CCS-PCS:102    13
+    #> 6 CCS-PCS:1 CCS-PCS:103    12
+
+The first two columns are the names of code. The third column is the
+count of the code pair.
+
+#### Co-occurrence matrix file (with index):
+
+    #>      i    j count
+    #> 1 1856 3004     1
+    #> 2  671 8332    10
+    #> 3 4737 4967    79
+    #> 4  572 9233     1
+    #> 5 1438 5749     3
+    #> 6 1165 9479     1
+
+The first two columns are the location indexes of code. The third column
+is the count of the code pair.
+
+#### Co-occurrence matrix dict file:
+
+    #> # A tibble: 6 x 2
+    #>   code        WordIndex
+    #>   <chr>           <dbl>
+    #> 1 CCS-PCS:1           1
+    #> 2 CCS-PCS:10          2
+    #> 3 CCS-PCS:100         3
+    #> 4 CCS-PCS:101         4
+    #> 5 CCS-PCS:102         5
+    #> 6 CCS-PCS:103         6
+
+The first column is the name of code, the second column is the location
+index. Only use when the input is **Co-occurrence matrix file with
+index**.
+
+#### Co-occurrence matrix code frequency counts file:
+
+    #> # A tibble: 6 x 2
+    #>   feature_id  feature_freq
+    #>   <chr>              <dbl>
+    #> 1 CCS-PCS:1           1577
+    #> 2 CCS-PCS:10           759
+    #> 3 CCS-PCS:100        10303
+    #> 4 CCS-PCS:101         5978
+    #> 5 CCS-PCS:102         5258
+    #> 6 CCS-PCS:103         1517
+
+The first column is the name of code, the second column is the frequency
+counts.
 
 ### Set up Parameters
 
-For the file paths, change it base on your file locations.
+For the file paths, change it base on your file locations. You can tune
+the dimensions on variable `dims`. The output files (`.Rdata` file &
+report file) will be saved at `out_dir`. If `out_dir = NULL`, it will
+create a folder called `output` and put it there.
 
 ``` r
 CO_file <- "dungeon//data//AD_cooccurence_result_1019.parquet"  # Co-occurrence File: .csv/.parquet/.Rdata
@@ -60,14 +125,34 @@ If your Co-occurrence matrix file has code pairs, a dictionary is not
 needed:
 
 ``` r
-summary <- get_eval_embed(CO_file, dims, out_dir)
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir)
 ```
 
 Otherwise, if there’s no code pairs but index, a dictionary
 `CO_dict_file` is needed:
 
 ``` r
-summary <- get_eval_embed(CO_file, dims, out_dir, CO_dict_file = "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv")    # Replace your dict file here 
+CO_dict_file <- "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv"   # Replace your dict file here 
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir, 
+                          CO_dict_file = CO_dict_file)   
+```
+
+Moreover, to further reduce the time cost, a code frequency counts file
+can be used to remove codes with low frequency. The default cutoff is
+set to **1000**. To change the cutoff, please refer to documents of
+function `get_eval_embed`.
+
+``` r
+freq_file <- "dungeon//data//UPMC_AD_code_freq.csv"
+summary <- get_eval_embed(CO_file = CO_file, 
+                          dims = dims, 
+                          out_dir = out_dir, 
+                          CO_dict_file = CO_dict_file, 
+                          freq_file = freq_file)
 ```
 
 The output of `get_eval_embed` is a list includes meta-data, embedding &

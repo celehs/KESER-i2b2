@@ -2,6 +2,7 @@
 
 export("%>%")
 export(Evaluate_codi)
+export(clear_CO)
 export(getSPPMI)
 export(get_embed)
 export(get_eval_embed)
