@@ -4,7 +4,8 @@
 #' It returns a list of summary including meta-data, evaluation and embedding itself. 
 #' 
 #' @inheritParams Evaluate_codi
-#' @param CO_file Co-ccurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' @inheritParams clear_CO
+#' @param CO_file Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' The data should be a table with 3 columns V1, V2, V3:
 #' \itemize{
 #' \item{\code{V1}}: Shows the row id (code id) or row code pair.
@@ -26,7 +27,7 @@
 #' By default it's set to \code{NULL} and read the default file within the package. 
 #' If a file name is offered, it'll read it instead and replace the default file
 #' @param ARP_file All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
-#' @return A list of infomation of meta-data, embedding & evaluation result. It will 
+#' @return A list of information of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
 #' 
 #' @export
@@ -34,6 +35,8 @@ get_eval_embed <- function(CO_file,
                            dims,
                            out_dir = NULL, 
                            CO_dict_file = NULL,
+                           freq_file = NULL,
+                           freq_min = 1000,
                            data_type = 1,
                            HAM_file = NULL,
                            ARP_file= NULL,
@@ -73,6 +76,12 @@ get_eval_embed <- function(CO_file,
       CO <- map_CO(CO, CO_dict)
     }
   }
+  
+  # Clear Codes (Remove codes less than a certain frequency)
+  CO <- clear_CO(CO, freq_file, freq_min)
+  
+  # Check Memory
+  memory_chk(CO)
   
   # Change CO Column Names
   colnames(CO) <- c("V1", "V2", "V3")

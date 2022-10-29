@@ -617,7 +617,7 @@ read_file <- function(file_name) {
 
 #' Functions to map CO codes from CO dict
 #' 
-#' @param CO COOC matrix, Should be a triple form.
+#' @param CO COOC (Co-occurrence) matrix, Should be a triple form.
 #' \itemize{
 #' \item{\code{V1}}: Shows the row id (code id).
 #' \item{\code{V2}}: Shows the col id (code id).
@@ -645,5 +645,55 @@ map_CO <- function(CO,  CO_dict) {
   }
   colnames(CO_new) <- CO_cols
   return(CO_new)
+}
+
+
+#' Function to get unique codes in CO
+#' @keywords internal
+get_unique_codes <- function(CO) {
+  return(unique(append(CO[[1]], CO[[2]]))) 
+}
+
+
+#' Function to remove CO codes by frequency cutoff
+#' 
+#' @inheritParams map_CO
+#' @param freq_file A data file with two columns, where:
+#' \itemize{
+#' \item{\code{Column 1}: Shows the name of unique codes.}
+#' \item{\code{Column 2}: Shows the corresponding frequency counts.}
+#' }
+#' Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' @param freq_min Frequency cutoff, codes with frequency count below \code{freq_min}
+#' will be removed.
+clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
+  if (is.null(freq_file)) {
+    cat("\nFrequency file not offered, no codes will be removed.\n")
+    cat(paste0("Total # of unique codes in CO: ", length(get_unique_codes(CO)), "\n"))
+    return(CO)
+  }
+  colnames(CO) <- c("V1", "V2", "V3")
+  df_freq <- read_file(freq_file)
+  colnames(df_freq) = c("code", "freq")
+  codes_co <- get_unique_codes(CO)
+  codes_rm <- df_freq %>% dplyr::filter(freq < freq_min) %>% 
+    dplyr::select(code) %>% dplyr::pull() %>% unique() %>% intersect(codes_co)
+  cat(paste0("\n", length(codes_rm), "/", length(codes_co), " unique codes in CO will be removed.\n", "Rules: ",
+             "Codes with frequency counts less than ", freq_min, " will be remove from CO.\n"))
+  CO_clear <- CO %>% dplyr::filter(!(V1 %in% codes_rm) & !(V2 %in% codes_rm))
+  return(CO_clear)
+}
+
+#' Function to check memory
+#' @keywords internal
+memory_chk <- function(CO) {
+  total_ram <- as.numeric(gsub("\r","",gsub("TotalVisibleMemorySize=","",system('wmic OS get TotalVisibleMemorySize /Value',intern=TRUE)[3])))/1024/1024
+  free_ram <- as.numeric(gsub("\r","",gsub("FreePhysicalMemory=","",system('wmic OS get FreePhysicalMemory /Value',intern=TRUE)[3])))/1024/1024
+  est_ram <- length(get_unique_codes(CO)) * RAM_USAGE_PER_CODE
+  cat(paste0("\nTotal Physical RAM: ", total_ram, " Gb.\n"))
+  cat(paste0("Free Physical RAM: ", free_ram, " Gb.\n"))
+  cat(paste0("Estimated RAM Usage: ", est_ram, " Gb.\n"))
+  if (est_ram > total_ram) stop("Total RAM not enough, please upgrade your physical RAM.")
+  if (est_ram > free_ram) stop("Usable RAM not enough, please free up your memory.")
 }
 #########################################################################
