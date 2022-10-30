@@ -695,6 +695,10 @@ memory_chk <- function(CO) {
   } else if (os == "Linux") {
     total_ram <- as.numeric(system("awk '/MemTotal/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
     free_ram <- as.numeric(system("awk '/MemFree/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
+  } else if (os == "Darwin") {
+    ram <- as.numeric(stringr::str_extract_all(system("top -l 1 | grep PhysMem", intern=TRUE), "\\d+")[[1]])
+    total_ram <- ram[1] + ram[3]
+    free_ram <- ram[3]
   } else {
     cat("\n Unrecognized OS: ", os, ". Memory check ignored.\n")
     return(NULL)
