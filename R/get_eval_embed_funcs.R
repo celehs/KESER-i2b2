@@ -692,7 +692,7 @@ memory_chk <- function(CO) {
   if (os == "Windows") {
     total_ram <- as.numeric(gsub("\r","",gsub("TotalVisibleMemorySize=","",system('wmic OS get TotalVisibleMemorySize /Value',intern=TRUE)[3])))/1024/1024
     free_ram <- as.numeric(gsub("\r","",gsub("FreePhysicalMemory=","",system('wmic OS get FreePhysicalMemory /Value',intern=TRUE)[3])))/1024/1024
-  } else if (os %in% c("Linux", "Darwin")) {
+  } else if (os == "Linux") {
     total_ram <- as.numeric(system("awk '/MemTotal/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
     free_ram <- as.numeric(system("awk '/MemFree/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
   } else {
