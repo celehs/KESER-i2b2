@@ -696,9 +696,20 @@ memory_chk <- function(CO) {
     total_ram <- as.numeric(system("awk '/MemTotal/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
     free_ram <- as.numeric(system("awk '/MemFree/ {print $2}' /proc/meminfo ", intern=TRUE))/1024/1024
   } else if (os == "Darwin") {
-    ram <- as.numeric(stringr::str_extract_all(system("top -l 1 | grep PhysMem", intern=TRUE), "\\d+")[[1]])
+    ram_txt <- stringr::str_extract_all(system("top -l 1 | grep PhysMem", intern=TRUE), "[0-9]+[a-zA-Z]{1}")[[1]]
+    ram <- lapply(ram_txt, function(x) {
+      num <- as.numeric(stringr::str_extract(x, "[0-9]+"))
+      unit <- stringr::str_extract(toupper(x), "[A-Z]+")
+      if ("G" %in% unit) {
+        return(num)
+      } else if ("M" %in% unit) {
+        return(num / 1024)
+      } else if ("K" %in% unit) {
+        return(num / 1024 / 1024)
+      } else (return(NA))
+    }) %>% unlist()
     total_ram <- ram[1] + ram[3]
-    free_ram <- ram[3]
+    free_ram <- ram[1]
   } else {
     cat("\n Unrecognized OS: ", os, ". Memory check ignored.\n")
     return(NULL)
