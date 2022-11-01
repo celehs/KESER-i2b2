@@ -20,7 +20,6 @@ Imports:
 	rmarkdown,
 	DT,
 	readr,
-	arrow,
 	rsvd
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1
