@@ -249,8 +249,8 @@ get_best_dim <- function(summary,
                          by = "weighted.rela") {
   
   best_dim <- get_plot_data(summary, col = metric) %>% 
-    dplyr::arrange(!!sym(by)) %>%
-    dplyr::filter(dplyr::row_number() == nrow(df_plot)) %>% pull(dims) %>% min()
+    dplyr::arrange(dplyr::desc(!!rlang::sym(by))) %>%
+    dplyr::filter(dplyr::row_number() == 1) %>% dplyr::pull(dims) %>% min()
   
   best_embed <- summary[["summary"]][[as.character(best_dim)]][["embedding"]]
   return(list("dim" = best_dim, "embedding" = best_embed))
