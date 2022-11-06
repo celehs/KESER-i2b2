@@ -4,7 +4,7 @@
 \alias{getSPPMI}
 \title{Get SPPMI matrix}
 \usage{
-getSPPMI(cooc, dict, code_LPcode)
+getSPPMI(cooc, dict, code_LPcode = NULL, threshold = 10)
 }
 \arguments{
 \item{cooc}{Should be a triple form of cooc.}
@@ -12,6 +12,8 @@ getSPPMI(cooc, dict, code_LPcode)
 \item{dict}{A data.frame.}
 
 \item{code_LPcode}{The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}}
+
+\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is 10.}
 }
 \value{
 A data matrix.

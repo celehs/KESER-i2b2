@@ -6,11 +6,12 @@
 \usage{
 get_eval_embed(
   CO_file,
-  dims,
+  dims = seq(100, 1000, 100),
   out_dir = NULL,
   CO_dict_file = NULL,
   freq_file = NULL,
   freq_min = 1000,
+  threshold = 10,
   data_type = 1,
   HAM_file = NULL,
   ARP_file = NULL,
@@ -29,7 +30,7 @@ The data should be a table with 3 columns V1, V2, V3:
 Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
-\item{dims}{A vector of numeric values for dimension.}
+\item{dims}{A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 
@@ -50,6 +51,8 @@ Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
 \item{freq_min}{Frequency cutoff, codes with frequency count below \code{freq_min}
 will be removed.}
 
+\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is 10.}
+
 \item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
 
 \item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
@@ -58,8 +61,7 @@ If a file name is offered, it'll read it instead and replace the default file}
 
 \item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 
-\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
-For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
 
 \item{labels}{A character vector of labels in evaluations summary. Values can be 
 \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 

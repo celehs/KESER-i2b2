@@ -44,13 +44,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getSVD</span><span class="op">(</span><span class="va">SPPMI</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getSVD</span><span class="op">(</span><span class="va">SPPMI</span>, <span class="va">dim</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>SPPMI</dt>
 <dd><p>The SPPMI matrix obtained from <code>getSPPMI</code>.</p></dd>
+
+
+<dt>dim</dt>
+<dd><p>specifies the target rank of the low-rank decomposition used in rSVD, suggested to set as highest dimension + 1000.</p></dd>
 
 </dl></div>
     <div id="value">

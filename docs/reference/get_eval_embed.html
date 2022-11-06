@@ -48,11 +48,12 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_eval_embed</span><span class="op">(</span></span>
 <span>  <span class="va">CO_file</span>,</span>
-<span>  <span class="va">dims</span>,</span>
+<span>  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CO_dict_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  freq_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  freq_min <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  data_type <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  HAM_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ARP_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -73,7 +74,7 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 
 
 <dt>dims</dt>
-<dd><p>A vector of numeric values for dimension.</p></dd>
+<dd><p>A vector of numeric values for dimension, by default is <code>seq(100, 1000, 100)</code>.</p></dd>
 
 
 <dt>out_dir</dt>
@@ -97,6 +98,10 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 will be removed.</p></dd>
 
 
+<dt>threshold</dt>
+<dd><p>Integer number, the threshold to get SPPMI matrix, by default is 10.</p></dd>
+
+
 <dt>data_type</dt>
 <dd><p>If data Does not contain CUI codes, set as <code>1</code>. Otherwise, set as <code>2</code>.</p></dd>
 
@@ -112,8 +117,7 @@ If a file name is offered, it'll read it instead and replace the default file</p
 
 
 <dt>normalize</dt>
-<dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding before evaluation or not.
-For evaluation purpose only, the final embedding result will NOT be normalized no matter what.</p></dd>
+<dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding or not.</p></dd>
 
 
 <dt>labels</dt>

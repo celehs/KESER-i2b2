@@ -27,8 +27,7 @@ Evaluate_codi(
 
 \item{prop}{There are 3 scenarios:}
 
-\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
-For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
 
 \item{labels}{A character vector of labels in evaluations summary. Values can be 
 \code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 

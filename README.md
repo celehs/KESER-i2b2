@@ -169,23 +169,44 @@ get_report(summary, plot_val = "auc", knit_format = "html")
 `out_dir` folder. If `out_dir` is `NULL` then it will create a folder
 called **output** in your working directly.
 
-#### Retrieve Embedding
+#### Summary Object
 
-Let’s say you picked the best `dim` from the plots, and the value is
-**200**. the way the retrieve it is:
+The summary object includes `meta_data` and `summary`:
 
 ``` r
-my_embed <- summary[["summary"]][["200"]][["embedding"]]
-View(my_embed)
+print(names(summary))
 ```
 
-#### Retrieve Evaluation Table
-
-For the same case above, the way to retrieved evaluation table is:
+`summary$meta_data` has the meta information. Inside the
+`summary$summary`, the next level is dimension value. Inside each
+dimension, there are `evaluation` and `embedding`.
 
 ``` r
-my_eval <- summary[["summary"]][["200"]][["evaluation"]]
-View(my_eval)
+print(summary$meta_data)
+print(names(summary$summary$`100`))
+```
+
+Let’s say you picked want to pick `dim=100` from the summary. this is
+the way to retrieve it:
+
+``` r
+my_embed <- summary$summary$`100`$embedding
+my_evaluation <- summary$summary$`100`$evaluation
+View(my_embed)
+View(my_evaluation)
+```
+
+#### Retrieve Best Embedding
+
+By default the best embedding is picking from the best `roc` with
+weighted relative (`weighted.rela`). You can change the setting in the
+function, please refer to the function documentation for more info.
+
+``` r
+best <- get_best_dim(summary)
+best_dim <- best$dim
+best_embed <- best$embedding
+View(best_embed)
 ```
 
 #### Check Results

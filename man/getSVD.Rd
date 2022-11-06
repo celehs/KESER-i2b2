@@ -4,10 +4,12 @@
 \alias{getSVD}
 \title{Getting randomized svd from SPPI.}
 \usage{
-getSVD(SPPMI)
+getSVD(SPPMI, dim)
 }
 \arguments{
 \item{SPPMI}{The SPPMI matrix obtained from \code{getSPPMI}.}
+
+\item{dim}{specifies the target rank of the low-rank decomposition used in rSVD, suggested to set as highest dimension + 1000.}
 }
 \value{
 A list of matrix.

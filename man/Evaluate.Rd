@@ -26,8 +26,7 @@ Evaluate(
 
 \item{prop}{There are 3 scenarios:}
 
-\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
-For evaluation purpose only, the final embedding result will NOT be normalized no matter what.}
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
 }
 \value{
 A list.

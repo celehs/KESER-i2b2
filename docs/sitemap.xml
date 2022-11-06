@@ -10,6 +10,9 @@
     <loc>/index.html</loc>
   </url>
   <url>
+    <loc>/reference/chk_CO.html</loc>
+  </url>
+  <url>
     <loc>/reference/clear_CO.html</loc>
   </url>
   <url>
@@ -40,6 +43,9 @@
     <loc>/reference/getSVD.html</loc>
   </url>
   <url>
+    <loc>/reference/get_best_dim.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_embed.html</loc>
   </url>
   <url>
@@ -65,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/memory_chk.html</loc>
+  </url>
+  <url>
+    <loc>/reference/path_chk.html</loc>
   </url>
   <url>
     <loc>/reference/pipe.html</loc>

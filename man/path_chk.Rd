@@ -7,7 +7,10 @@
 path_chk(path)
 }
 \arguments{
-\item{path}{An absolute or relative path}
+\item{path}{An full or relative path.}
+}
+\value{
+A full path of input path.
 }
 \description{
 Function to check path

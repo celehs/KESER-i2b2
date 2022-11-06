@@ -186,30 +186,30 @@ roll_up = function(data,rolluplist,viewproc=TRUE){
 #' @param cooc Should be a triple form of cooc.
 #' @param dict A data.frame.
 #' @param code_LPcode The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}
+#' @param threshold Integer number, the threshold to get SPPMI matrix, by default is 10.
 #' @return A data matrix.
 #' @export
-getSPPMI = function(cooc, dict, code_LPcode){
-  colnames(cooc) = c("feature1","feature2","ct_A")
-  id = which(cooc$feature1%in%dict$feature_id & cooc$feature2%in%dict$feature_id)
-  cooc = cooc[id,]
-  colnames(cooc) = paste("V",1:3,sep="")
-  data = roll_up(cooc,code_LPcode)
-  colnames(data) = c("feature1","feature2",'ct_A')
+getSPPMI = function(cooc, dict, code_LPcode = NULL, threshold = 10){
+  colnames(cooc) <- c("feature1","feature2","ct_A")
+  id <- which(cooc$feature1%in%dict$feature_id & cooc$feature2%in%dict$feature_id)
+  cooc <- cooc[id,]
+  colnames(cooc) <- paste("V",1:3,sep="")
+  # data = roll_up(cooc,code_LPcode)   # No Needed
+  data <- cooc
+  colnames(data) <- c("feature1","feature2",'ct_A')
   
-  feature.list = union(data$feature1[!duplicated(data$feature1)],
+  feature.list <- union(data$feature1[!duplicated(data$feature1)],
                        data$feature2[!duplicated(data$feature2)])
   
-  cooccur.matrix.A = matrix(NA, length(feature.list), length(feature.list))
+  cooccur.matrix.A <- matrix(NA, length(feature.list), length(feature.list))
   data <- data %>% dplyr::mutate(feature1_No = match(data$feature1,feature.list),
                           feature2_No = match(data$feature2,feature.list))
   inp.mtx <- as.matrix(data[,c('feature1_No','feature2_No','ct_A')])
   cooccur.matrix.A[inp.mtx[,1:2]]<- inp.mtx[,'ct_A']
   cooccur.matrix.A[inp.mtx[,c(2,1)]]<- inp.mtx[,'ct_A']
-  
   cooccur.matrix.A[which(is.na(cooccur.matrix.A) == T)] = 0
   cooccur.matrix.A.1 = cooccur.matrix.A
   rm(cooccur.matrix.A)
-  threshold = 10
   cooccur.matrix.A.1[which(cooccur.matrix.A.1 < threshold)] = 0
   idx = which(feature.list%in%c("LOINC:NA","LOINC:"))
   if(length(idx)>0){
@@ -247,17 +247,18 @@ getSPPMI = function(cooc, dict, code_LPcode){
 #' Getting randomized svd from SPPI.
 #' 
 #' @param SPPMI The SPPMI matrix obtained from \code{getSPPMI}.
+#' @param dim specifies the target rank of the low-rank decomposition used in rSVD, suggested to set as highest dimension + 1000.
 #' @return A list of matrix.
 #' \itemize{
 #' \item{\code{d} Array, singular values.}
 #' \item{\code{u} Array, left singular vectors.}
 #' \item{\code{v} Array, right singular vectors.}
 #' }
-getSVD <- function(SPPMI) {
-  a = which(apply(SPPMI,1,sum)!=0)
-  SPPMI = SPPMI[a,a]
+getSVD <- function(SPPMI, dim) {
+  a <- which(rowSums(SPPMI) != 0)
+  SPPMI <- SPPMI[a,a]
   set.seed(1)
-  fit.A <- rsvd::rsvd(SPPMI)
+  fit.A <- rsvd::rsvd(SPPMI, k = dim)
   rownames(fit.A$u) <- rownames(SPPMI)
   return(fit.A)
 }
@@ -265,14 +266,18 @@ getSVD <- function(SPPMI) {
 
 #' Getting embedding from svd
 #' 
+#' @inheritParams Evaluate_codi
 #' @param mysvd The svd result.
 #' @param d Dimension of the final embedding.
 #' @return A dataframe of embedding.
 #' @export
-get_embed = function(mysvd, d=2000){
+get_embed = function(mysvd, d = 2000, normalize = TRUE){
   id = which(sign(mysvd$u[1,])==sign(mysvd$v[1,]))
   id = id[1:min(d,length(id))]
   embed = mysvd$u[,id]%*%diag(sqrt(mysvd$d[id]))
+  if(normalize){
+    embed = embed/apply(embed,1,norm,'2')
+  }
   rownames(embed) = rownames(mysvd$u)
   return(embed)
 }
@@ -363,9 +368,7 @@ get_type = function(AllRelationPairs){
 #' \item{Otherwise, using all pairs to evaluate the embedding.}
 #' }
 #' @param prop There are 3 scenarios:
-#' @param normalize \code{TRUE} or \code{TFALSE}, to normalize embedding before evaluation or not.
-#' For evaluation purpose only, the final embedding result will NOT be normalized no matter what.
-#' 
+#' @param normalize \code{TRUE} or \code{TFALSE}, to normalize embedding or not.
 #' @details
 #' \itemize{
 #' \item{\code{wei_auc}: The weighted auc of similar pairs, related pairs and CUI-CUI pairs.}
@@ -661,7 +664,6 @@ get_unique_codes <- function(CO) {
   return(unique(append(CO[[1]], CO[[2]]))) 
 }
 
-
 #' Function to remove CO codes by frequency cutoff
 #' 
 #' @inheritParams map_CO
@@ -675,9 +677,9 @@ get_unique_codes <- function(CO) {
 #' will be removed.
 #' @export
 clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
+  cat(paste0("\nRules: Codes with frequency counts less than ", freq_min, " will be remove from CO.\n"))
   if (is.null(freq_file)) {
     cat("\nFrequency file not offered, no codes will be removed.\n")
-    cat(paste0("Total # of unique codes in CO: ", length(get_unique_codes(CO)), "\n"))
     return(CO)
   }
   colnames(CO) <- c("V1", "V2", "V3")
@@ -686,8 +688,7 @@ clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
   codes_co <- get_unique_codes(CO)
   codes_rm <- df_freq %>% dplyr::filter(freq < freq_min) %>% 
     dplyr::select(code) %>% dplyr::pull() %>% unique() %>% intersect(codes_co)
-  cat(paste0("\n", length(codes_rm), "/", length(codes_co), " unique codes in CO will be removed.\n", "Rules: ",
-             "Codes with frequency counts less than ", freq_min, " will be remove from CO.\n"))
+  cat(paste0("\n", length(codes_rm), "/", length(codes_co), " unique codes in CO will be removed."))
   CO_clear <- CO %>% dplyr::filter(!(V1 %in% codes_rm) & !(V2 %in% codes_rm))
   return(CO_clear)
 }
@@ -745,5 +746,33 @@ path_chk <- function(path) {
   } else {
     stop(paste0("Path or File Not Found: ", path), ". Please try entering the absolute full path.")
   }
+}
+
+#' Function to check CO data
+#' @keywords internal
+chk_CO <- function(CO) {
+  cat("\n\n- Codes ending with '-PCS' will be cleared as: 'Code-PCS' to 'Code'\n")
+  CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))
+  cat("- Valid codes: ",  paste0(VALID_CODES, collapse=", "), "\n")
+  cat("- Valid code format: Valid_Code:number or Valid_Code:number.number")
+  cat("\n- Examples: LOINC:15429, RXNORM:248656, PheCode:426.92, CCS:143\n")
+  CO_Unique_codes <- get_unique_codes(CO)
+  valid_codes <- lapply(VALID_CODES, function(x) {
+    CO_Unique_codes[!is.na(stringr::str_extract(CO_Unique_codes, paste0(x, ":([0-9]+$|[0-9]+.[0-9]+$)")))]
+  })
+  names(valid_codes) <- VALID_CODES
+  invalid_codes <- CO_Unique_codes
+  cat("\nCodes summary (", length(CO_Unique_codes), "unique codes ):")
+  for (code in VALID_CODES) {
+    cat(paste0("\n# of ", code, ": ", length(valid_codes[[code]])))
+    invalid_codes <- setdiff(invalid_codes, valid_codes[[code]])
+  }
+  cat(paste0("\n# of invalid codes: ", length(invalid_codes), "\n"))
+  if (length(invalid_codes) != 0) {
+    cat(paste0("\nInvalid codes: "))
+    cat(invalid_codes)
+    cat("\n\n")
+  }
+  return(CO)
 }
 #########################################################################

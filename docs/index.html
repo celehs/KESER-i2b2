@@ -70,7 +70,7 @@
 <p>You can install the development version from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">KESER.i2b2</span><span class="op">)</span></span></code></pre></div>
 <p>If you can’t install it, alternative option is to download the repo and use <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code> to load the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -187,20 +187,31 @@
 <p><code>get_report</code> will not return anything but creates the plot report under <code>out_dir</code> folder. If <code>out_dir</code> is <code>NULL</code> then it will create a folder called <strong>output</strong> in your working directly.</p>
 </div>
 <div class="section level4">
-<h4 id="retrieve-embedding">Retrieve Embedding<a class="anchor" aria-label="anchor" href="#retrieve-embedding"></a>
+<h4 id="summary-object">Summary Object<a class="anchor" aria-label="anchor" href="#summary-object"></a>
 </h4>
-<p>Let’s say you picked the best <code>dim</code> from the plots, and the value is <strong>200</strong>. the way the retrieve it is:</p>
+<p>The summary object includes <code>meta_data</code> and <code>summary</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_embed</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">[[</span><span class="st">"summary"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"200"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"embedding"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">my_embed</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><code>summary$meta_data</code> has the meta information. Inside the <code>summary$summary</code>, the next level is dimension value. Inside each dimension, there are <code>evaluation</code> and <code>embedding</code>.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">meta_data</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Let’s say you picked want to pick <code>dim=100</code> from the summary. this is the way to retrieve it:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_embed</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">$</span><span class="va">embedding</span></span>
+<span><span class="va">my_evaluation</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">$</span><span class="va">evaluation</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">my_embed</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">my_evaluation</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="retrieve-evaluation-table">Retrieve Evaluation Table<a class="anchor" aria-label="anchor" href="#retrieve-evaluation-table"></a>
+<h4 id="retrieve-best-embedding">Retrieve Best Embedding<a class="anchor" aria-label="anchor" href="#retrieve-best-embedding"></a>
 </h4>
-<p>For the same case above, the way to retrieved evaluation table is:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">my_eval</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">[[</span><span class="st">"summary"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"200"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"evaluation"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">my_eval</span><span class="op">)</span></span></code></pre></div>
+<p>By default the best embedding is picking from the best <code>roc</code> with weighted relative (<code>weighted.rela</code>). You can change the setting in the function, please refer to the function documentation for more info.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">best</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_best_dim.html">get_best_dim</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span></span>
+<span><span class="va">best_dim</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">dim</span></span>
+<span><span class="va">best_embed</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">embedding</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">best_embed</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="check-results">Check Results<a class="anchor" aria-label="anchor" href="#check-results"></a>

@@ -5,6 +5,7 @@
 #' 
 #' @inheritParams Evaluate_codi
 #' @inheritParams clear_CO
+#' @inheritParams getSPPMI
 #' @param CO_file Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' The data should be a table with 3 columns V1, V2, V3:
 #' \itemize{
@@ -14,7 +15,7 @@
 #' }
 #' Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
 #' from id to code pair is needed. Please see \code{CO_dict_file} for details.
-#' @param dims A vector of numeric values for dimension.
+#' @param dims A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.
 #' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.
 #' @param CO_dict_file A data file with two columns, where:
 #' \itemize{
@@ -32,11 +33,12 @@
 #' 
 #' @export
 get_eval_embed <- function(CO_file, 
-                           dims,
+                           dims = seq(100, 1000, 100),
                            out_dir = NULL, 
                            CO_dict_file = NULL,
                            freq_file = NULL,
                            freq_min = 1000,
+                           threshold = 10,
                            data_type = 1,
                            HAM_file = NULL,
                            ARP_file= NULL,
@@ -77,24 +79,26 @@ get_eval_embed <- function(CO_file,
     }
   }
   
+  # Change CO Column Names
+  colnames(CO) <- c("V1", "V2", "V3")
+  
+  # Check CO data
+  cat("\nChecking CO data...")
+  CO <- chk_CO(CO)
+  
   # Clear Codes (Remove codes less than a certain frequency)
+  cat("\nClearing codes ...")
   CO <- clear_CO(CO, freq_file, freq_min)
   
   # Check Memory
   memory_chk(CO)
-  
-  # Change CO Column Names
-  colnames(CO) <- c("V1", "V2", "V3")
-  
-  # Align Codes
-  cat("\nAligning codes...")
-  CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))  
   
   # Get Time
   start_t <- Sys.time()
   
   # Filter Dimensions
   dims <- dims[which(dims <= DIM_MAX)]
+  max_dim <- max(dims)
   
   # Run
   cat("\n-------------------------------------------------------------------------\n")
@@ -109,19 +113,19 @@ get_eval_embed <- function(CO_file,
   CO_unique <- unique(c(CO$V1, CO$V2))
   
   # Obtain The Roll Up Dictionary For LOINC Codes:
-  cat("\nGetting rollup dict...\n")
-  code_LPcode <- get_rollup_dict(CO_unique, MAH)
+  # cat("\nGetting rollup dict...\n")
+  # code_LPcode <- get_rollup_dict(CO_unique, MAH)   # No needed
   
   # Calculate SPPMI
   cat("\nCalculating SPPMI...")
   t <- Sys.time()
-  SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), code_LPcode)
+  SPPMI <- getSPPMI(CO, data.frame(feature_id = CO_unique), threshold = threshold)
   t_cost <- round(as.numeric(difftime(Sys.time(), t, units = "mins")), 2)
   cat(paste0("\n(", t_cost, " mins)\n"))
   
   cat("\nCalculating SVD...")
   t <- Sys.time()
-  SVD <- getSVD(SPPMI)
+  SVD <- getSVD(SPPMI, dim = max_dim + 1000)
   t_cost <- round(as.numeric(difftime(Sys.time(), t, units = "mins")), 2)
   cat(paste0("\n(", t_cost, " mins)\n"))
   #########################################################################
@@ -140,7 +144,7 @@ get_eval_embed <- function(CO_file,
     # Get Embedding
     #########################################################################
     cat("\nGetting embedding...")
-    embed = get_embed(SVD, dim)
+    embed = get_embed(SVD, dim, normalize = normalize)
     #########################################################################
     
     
@@ -149,9 +153,9 @@ get_eval_embed <- function(CO_file,
     # Evaluate Embedding
     cat("\nEvaluating...")
     if (data_type == 1) {
-      ans = Evaluate_codi(embed, AllRelationPairs = ARP, normalize = normalize)  # data_type == 1: codi only
+      ans = Evaluate_codi(embed, AllRelationPairs = ARP, normalize = !normalize)  # data_type == 1: codi only, if embedding normalized, evaluation should not be normalized again.
     } else if (data_type == 2) {
-      ans = Evaluate(embed, AllRelationPairs = ARP, normalize = normalize)       # data_type == 2: codi & CUI
+      ans = Evaluate(embed, AllRelationPairs = ARP, normalize = !normalize)       # data_type == 2: codi & CUI, if embedding normalized, evaluation should not be normalized again.
     } else stop("Invalid Value: 'data_type' should be 1 or 2.")
     #########################################################################
     
@@ -188,13 +192,6 @@ get_eval_embed <- function(CO_file,
 }
 
 
-
-
-
-# Get Plotting Output File
-################################################################################
-
-################################################################################
 #' Generate Plot Report
 #' 
 #' \code{get_report} acts as plot report generation from summary returned by \code{get_eval_embed}.
@@ -236,7 +233,28 @@ get_report <- function(summary,
   rmarkdown::render(rmd_file, output_file = out_file)
   cat("\nOutput sumamry file saved as: ", out_file, "\n")
 }
+
+
+#' Get Best Embedding from Summary 
+#' 
+#' @param summary the summary object from output of function \code{get_eval_embed}.
+#' @param metric Metric for evaluation (Columns in summary evaluation dataframes). 
+#' Options could be: #"pairs", "auc", "cut/0.01", "cut/0.05", "cut/0.1", "TPR/0.01", "TPR/0.05" or "TPR/0.1".
+#' By default is auc.
+#' @param by The evaluation object, options can be seems in plot summary file (the legend). By default is \code{weighted.rela}.
+#' 
+#' @export
+get_best_dim <- function(summary,
+                         metric = "auc",
+                         by = "weighted.rela") {
   
+  best_dim <- get_plot_data(summary, col = metric) %>% 
+    dplyr::arrange(!!sym(by)) %>%
+    dplyr::filter(dplyr::row_number() == nrow(df_plot)) %>% pull(dims) %>% min()
+  
+  best_embed <- summary[["summary"]][[as.character(best_dim)]][["embedding"]]
+  return(list("dim" = best_dim, "embedding" = best_embed))
+}
  
 
 

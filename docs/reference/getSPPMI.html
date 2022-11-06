@@ -44,7 +44,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getSPPMI</span><span class="op">(</span><span class="va">cooc</span>, <span class="va">dict</span>, <span class="va">code_LPcode</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getSPPMI</span><span class="op">(</span><span class="va">cooc</span>, <span class="va">dict</span>, code_LPcode <span class="op">=</span> <span class="cn">NULL</span>, threshold <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -59,6 +59,10 @@
 
 <dt>code_LPcode</dt>
 <dd><p>The output of <code>get_rollup_dict(unique(c(data$V1, data$V2)))</code></p></dd>
+
+
+<dt>threshold</dt>
+<dd><p>Integer number, the threshold to get SPPMI matrix, by default is 10.</p></dd>
 
 </dl></div>
     <div id="value">
