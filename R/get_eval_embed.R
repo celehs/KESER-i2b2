@@ -104,7 +104,7 @@ get_eval_embed <- function(CO_file,
   cat("\n-------------------------------------------------------------------------\n")
   cat("\n")
   cat(paste0("Dimensions Setting:\n", paste(dims, collapse=", "), "  (Dimension greater than ",  DIM_MAX, " will be ignore)"))
-  cat(paste0("\n\nNote: It may take hours to run depending on data size and your hardware.\n"))
+  cat(paste0("\n\nNote: It may take minutes to run depending on data size and your hardware.\n"))
   
   # Generate SPPMI & SVD from cooc
   #########################################################################
