@@ -91,6 +91,7 @@ get_eval_embed <- function(CO_file,
   CO <- clear_CO(CO, freq_file, freq_min)
   
   # Check Memory
+  cat("\nMemory check...\n")
   memory_chk(CO)
   
   # Get Time
