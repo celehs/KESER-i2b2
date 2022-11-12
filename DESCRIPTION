@@ -21,6 +21,7 @@ Imports:
 	DT,
 	readr,
 	rsvd,
-	rlang
+	rlang,
+	arrow
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1

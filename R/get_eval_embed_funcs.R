@@ -610,11 +610,11 @@ read_file <- function(file_name) {
   ext <- strsplit(tolower(file_name), split = "\\.")[[1]][-1]
   if (ext == "csv") return(readr::read_csv(file_name, show_col_types = FALSE))
   if (ext == "parquet") {
-    tryCatch(suppressWarnings(library(arrow)),
-             error = function() {
-               message("Package 'arrow' Not Found. To install, ",
-                       "try: install.packages(\"arrow\")")
-             })
+    # tryCatch(suppressWarnings(library(arrow)),
+    #          error = function() {
+    #            message("Package 'arrow' Not Found. To install, ",
+    #                    "try: install.packages(\"arrow\")")
+    #          })
     return(arrow::read_parquet(file_name, show_col_types = FALSE) %>% as.data.frame())
   }
   if (ext == "rdata") {
