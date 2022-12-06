@@ -754,11 +754,11 @@ chk_CO <- function(CO) {
   cat("\n\n- Codes ending with '-PCS' will be cleared as: 'Code-PCS' to 'Code'\n")
   CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))
   cat("- Valid codes: ",  paste0(VALID_CODES, collapse=", "), "\n")
-  cat("- Valid code format: Valid_Code:number or Valid_Code:number.number")
-  cat("\n- Examples: LOINC:15429, RXNORM:248656, PheCode:426.92, CCS:143\n")
+  cat("- Examples: LOINC:15429, RXNORM:248656, PheCode:426.92, CCS:143\n")
   CO_Unique_codes <- get_unique_codes(CO)
   valid_codes <- lapply(VALID_CODES, function(x) {
-    CO_Unique_codes[!is.na(stringr::str_extract(CO_Unique_codes, paste0(x, ":([0-9]+$|[0-9]+.[0-9]+$)")))]
+    # CO_Unique_codes[!is.na(stringr::str_extract(CO_Unique_codes, paste0(x, ":([0-9]+$|[0-9]+.[0-9]+$)")))]
+    CO_Unique_codes[!is.na(stringr::str_extract(CO_Unique_codes, paste0(x, ":.")))]
   })
   names(valid_codes) <- VALID_CODES
   invalid_codes <- CO_Unique_codes

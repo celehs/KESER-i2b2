@@ -22,6 +22,8 @@ This is a package to:
 
 * Get Evaluation Plots
 
+* Get Embedding Regression for Feature Selection
+
 ## Installation
 
 You can install the development version from GitHub with:
@@ -41,6 +43,8 @@ devtools::load_all()
 ```
 
 ## Usage
+
+## Step 1: Get Embedding from Co-ocuurence Matrix.
 
 Make sure you have the following files available:
 
@@ -183,6 +187,84 @@ The evaluation plots are saved as "Summary-XX-YY-ZZ.html", and the original summ
 
 You can choose a proper dimension and use the corresponding embedding for the next steps.
 
+## Step 2: Get Selected Features with Embedding Regression
+
+From above we know how to get the embedding from co-occurence matrix step by step. Further we'll used the embedding to select related features for our interested PheCodes. Examples below will use **RPDR** data.
+
+First, let's get the embedding from training data.
+
+```{r eval=FALSE}
+CO_train <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_victor_2019.csv" 
+CO_test <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_sample1_victor_2019.csv" 
+out_dir <- "H:\\test"  
+
+# get embedding & evaluation
+summary_train <- get_eval_embed(CO_file = CO_train, 
+                                dims = seq(100, 1000, 100), 
+                                out_dir = out_dir)
+
+# get plot report (Optional)
+get_report(summary_train, plot_val = "auc", knit_format = "html")
+```
+
+Second, let's get the training embedding with **best auc** of weighted relative. From below we can tell that the best dimension to use is `500`. 
+
+```{r eval=FALSE}
+# get best embedding based on best auc by weighted relative
+best <- get_best_dim(summary_train)
+print(best$dim)
+
+# get training & testing embedding based on best dimension
+embed_train <- best$embedding
+embed_valid <- get_best_dim(get_eval_embed(CO_file = CO_test, 
+                                           dims = best$dim, 
+                                           out_dir = out_dir))[["embedding"]]
+```
+
+Third, perform **glmnet** regression model based on embedding to get the related features (codes).
+
+```{r eval=FALSE}
+# get regression for embeding to select related codes
+phecodes <- c("PheCode:714.1", "PheCode:250.2", "PheCode:278.1")   # your interested PheCodes
+lambda_vec <- c(seq(1, 51, 1) * 1e-6, seq(60, 1000, 50) * 1e-6)   # the lambda candidates for glmnet
+alpha = 0.25    # alpha value for glmnet
+regression_summary <- get_embed_regression(embed_train = embed_train, 
+                                           embed_valid = embed_valid, 
+                                           phecodes = phecodes,
+                                           dim = best$dim,
+                                           lambda_vec = lambda_vec,
+                                           alpha = 0.25)
+```
+
+Then, you can access the results in `regression_summary`. 
+
+`regression_summary$summary_data` is the selected features with beta's, cosine values & descriptions for interested PheCode. 
+
+`regression_summary$Nlist` is the number of non-zero betas for each lambda selected. 
+
+`regression_summary$min_lambdas` is the lambda selected for minimum AIC + testing residuals.
+
+`regression_summary$eval_plots` is the evaluation plots of testing residual over lambda. 
+
+`regression_summary$wordcloud_plots` is the word cloud plot magnified by cosine value, which indicates the relatedness of codes to the interested PheCode.
+
+```{r eval=FALSE}
+View(regression_summary$summary_data$`PheCode:714.1`)
+print(regression_summary$Nlist$`PheCode:714.1`)
+print(regression_summary$min_lambdas$`PheCode:714.1`)
+print(regression_summary$eval_plots$`PheCode:714.1`)
+print(regression_summary$wordcloud_plots$`PheCode:714.1`)
+```
+
+**Warning:** The evaluation plots of **Test set + AIC** should be **U Curve**. Otherwise it's not correct. If the U Curve does not occur, tune the `lambda_vec` and `alpha` to and repeat the step 2 again. Given that the **lambda_vec** is highly data specific, it's very likely that you need to tune it by yourself.
+
+Example of Valid Evaluation (U Shape) :
+
+![](inst\png\valid_regression.png)\ 
+
+Example of Invalid Evaluation Plot (Non-U Shape):
+
+![](inst\png\invalid_regression.png)\ 
 
 See the [Documentation](https://celehs.github.io/KESER-i2b2/) to learn more.
 
