@@ -11,7 +11,7 @@
 #' }
 #' @param MAH: Multi-axial hierarchy dataframe.
 #' @return A dataframe.
-#' @export
+#' @keywords internal
 get_rollup_dict = function(codelist, MAH){
   # codelist is a vector including LOINC codes
   # MAH is a data.frame loaded from a csv called MultiAxialHierarchy.csv
@@ -188,7 +188,7 @@ roll_up = function(data,rolluplist,viewproc=TRUE){
 #' @param code_LPcode The output of \code{get_rollup_dict(unique(c(data$V1, data$V2)))}
 #' @param threshold Integer number, the threshold to get SPPMI matrix, by default is 10.
 #' @return A data matrix.
-#' @export
+#' @keywords internal
 getSPPMI = function(cooc, dict, code_LPcode = NULL, threshold = 10){
   colnames(cooc) <- c("feature1","feature2","ct_A")
   id <- which(cooc$feature1%in%dict$feature_id & cooc$feature2%in%dict$feature_id)
@@ -254,6 +254,7 @@ getSPPMI = function(cooc, dict, code_LPcode = NULL, threshold = 10){
 #' \item{\code{u} Array, left singular vectors.}
 #' \item{\code{v} Array, right singular vectors.}
 #' }
+#' @keywords internal
 getSVD <- function(SPPMI, dim) {
   a <- which(rowSums(SPPMI) != 0)
   SPPMI <- SPPMI[a,a]
@@ -270,7 +271,7 @@ getSVD <- function(SPPMI, dim) {
 #' @param mysvd The svd result.
 #' @param d Dimension of the final embedding.
 #' @return A dataframe of embedding.
-#' @export
+#' @keywords internal
 get_embed = function(mysvd, d = 2000, normalize = TRUE){
   id = which(sign(mysvd$u[1,])==sign(mysvd$v[1,]))
   id = id[1:min(d,length(id))]
@@ -434,7 +435,7 @@ Evaluate = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normal
 #' "PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} .
 #' If \code{NULL} then all labels will be used.
 #' @return A list.
-#' @export
+#' @keywords internal
 Evaluate_codi = function(embed, AllRelationPairs, evatype = "all", prop = 0.3, normalize = TRUE, labels=NULL){
   
   if(normalize){
@@ -603,7 +604,7 @@ plt <- function(data, x="dims", y="auc", group = "pairs", method = "plotly") {
 #########################################################################
 #' Functions to read data file
 #' 
-#' @param file_name Data format can be .csv/.parquet/.Rdata.
+#' @param file_name Data format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' @return A DataFrame.
 #' @export
 read_file <- function(file_name) {

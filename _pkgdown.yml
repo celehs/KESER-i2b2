@@ -11,9 +11,4 @@ reference:
   - get_report
   - get_best_dim
   - get_embed_regression
-  - get_rollup_dict
-  - getSPPMI
-  - getSVD
-  - get_embed
-  - Evaluate_codi 
   - read_file

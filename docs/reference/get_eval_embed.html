@@ -48,17 +48,12 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_eval_embed</span><span class="op">(</span></span>
 <span>  <span class="va">CO_file</span>,</span>
+<span>  <span class="va">freq_file</span>,</span>
 <span>  dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  CO_dict_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  freq_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  freq_min <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  data_type <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  HAM_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  ARP_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  labels <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -66,11 +61,19 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
     <h2>Arguments</h2>
     <dl><dt>CO_file</dt>
 <dd><p>Co-occurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
-The data should be a table with 3 columns V1, V2, V3:</p><ul><li><p><code>V1</code>: Shows the row id (code id) or row code pair.</p></li>
-<li><p><code>V2</code>: Shows the col id (code id) or row code pair..</p></li>
-<li><p><code>V3</code>: Shows the counts for certain pair.</p></li>
-</ul><p>Note: If V1 &amp; V2 are code ids other than code pairs, a mapping dict offering information 
-from id to code pair is needed. Please see <code>CO_dict_file</code> for details.</p></dd>
+The data should be a table with 3 columns index1, index2, count:</p><ul><li><p><code>index1</code>: Shows the index of code1.</p></li>
+<li><p><code>index2</code>: Shows the col index of code2.</p></li>
+<li><p><code>count</code>: Shows the counts for certain pair.</p></li>
+</ul></dd>
+
+
+<dt>freq_file</dt>
+<dd><p>Frequency count file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
+The data should be a table with 4 columns index, code, description, freq_count:</p><ul><li><p><code>index</code>: Shows the index of code.</p></li>
+<li><p><code>code</code>: Shows the name of code.</p></li>
+<li><p><code>description</code>: Shows the description text of code.</p></li>
+<li><p><code>freq_count</code>: Shows the frequency count of code.</p></li>
+</ul></dd>
 
 
 <dt>dims</dt>
@@ -81,50 +84,17 @@ from id to code pair is needed. Please see <code>CO_dict_file</code> for details
 <dd><p>Output folder, if <code>NULL</code> then by default set to your_working_directory/output.</p></dd>
 
 
-<dt>CO_dict_file</dt>
-<dd><p>A data file with two columns, where:</p><ul><li><p><code>Column 1</code>: Shows the name of code pair.</p></li>
-<li><p><code>Column 2</code>: Shows the corresponding id number.</p></li>
-</ul><p>File format can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
-
-
-<dt>freq_file</dt>
-<dd><p>A data file with two columns, where:</p><ul><li><p><code>Column 1</code>: Shows the name of unique codes.</p></li>
-<li><p><code>Column 2</code>: Shows the corresponding frequency counts.</p></li>
-</ul><p>Format of <code>freq_file</code> can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
-
-
 <dt>freq_min</dt>
-<dd><p>Frequency cutoff, codes with frequency count below <code>freq_min</code>
-will be removed.</p></dd>
+<dd><p>The frequency counts cutoff for code filtering. If the counts are less than <code>freq_min</code>, it’ll be filtered
+out. By default is <code>1000</code>.</p></dd>
 
 
 <dt>threshold</dt>
-<dd><p>Integer number, the threshold to get SPPMI matrix, by default is 10.</p></dd>
-
-
-<dt>data_type</dt>
-<dd><p>If data Does not contain CUI codes, set as <code>1</code>. Otherwise, set as <code>2</code>.</p></dd>
-
-
-<dt>HAM_file</dt>
-<dd><p>Multi-axial hierarchy data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
-By default it's set to <code>NULL</code> and read the default file within the package. 
-If a file name is offered, it'll read it instead and replace the default file</p></dd>
-
-
-<dt>ARP_file</dt>
-<dd><p>All relation pairs data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p></dd>
+<dd><p>Integer number, the threshold to get SPPMI matrix, by default is <code>10</code>.</p></dd>
 
 
 <dt>normalize</dt>
-<dd><p><code>TRUE</code> or <code>TFALSE</code>, to normalize embedding or not.</p></dd>
-
-
-<dt>labels</dt>
-<dd><p>A character vector of labels in evaluations summary. Values can be 
-<code>"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
-"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"</code> .
-If <code>NULL</code> then all labels will be used.</p></dd>
+<dd><p><code>TRUE</code> or <code>FALSE</code>, to normalize embedding or not. By default is <code>True</code>.</p></dd>
 
 </dl></div>
     <div id="value">

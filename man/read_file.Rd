@@ -7,7 +7,7 @@
 read_file(file_name)
 }
 \arguments{
-\item{file_name}{Data format can be .csv/.parquet/.Rdata.}
+\item{file_name}{Data format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
 }
 \value{
 A DataFrame.

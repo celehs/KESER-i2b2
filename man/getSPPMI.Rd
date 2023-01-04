@@ -21,3 +21,4 @@ A data matrix.
 \description{
 Obtain SPPMI Matrix from COOC Matrix in Triple Form.
 }
+\keyword{internal}

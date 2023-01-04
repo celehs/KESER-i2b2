@@ -16,37 +16,32 @@ get_eval_embed(
 }
 \arguments{
 \item{CO_file}{Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
-The data should be a table with 3 columns V1, V2, V3:
+The data should be a table with 3 columns index1, index2, count:
 \itemize{
-\item{\code{V1}}: Shows the row id (code id) or row code pair.
-\item{\code{V2}}: Shows the col id (code id) or row code pair..
-\item{\code{V3}}: Shows the counts for certain pair.
-}
-Note: If V1 & V2 are code ids other than code pairs, a mapping dict offering information 
-from id to code pair is needed. Please see \code{CO_dict_file} for details.}
+\item{\code{index1}}: Shows the index of code1.
+\item{\code{index2}}: Shows the col index of code2.
+\item{\code{count}}: Shows the counts for certain pair.
+}}
+
+\item{freq_file}{Frequency count file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+The data should be a table with 4 columns index, code, description, freq_count:
+\itemize{
+\item{\code{index}}: Shows the index of code.
+\item{\code{code}}: Shows the name of code.
+\item{\code{description}}: Shows the description text of code.
+\item{\code{freq_count}}: Shows the frequency count of code.
+}}
 
 \item{dims}{A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 
-\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is 10.}
+\item{freq_min}{The frequency counts cutoff for code filtering. If the counts are less than \code{freq_min}, it’ll be filtered
+out. By default is \code{1000}.}
 
-\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
+\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is \code{10}.}
 
-\item{CO_dict_file}{A data file with two columns, where:
-\itemize{
-\item{\code{Column 1}: Shows the name of code pair.}
-\item{\code{Column 2}: Shows the corresponding id number.}
-}
-File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
-\item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
-
-\item{HAM_file}{Multi-axial hierarchy data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
-By default it's set to \code{NULL} and read the default file within the package. 
-If a file name is offered, it'll read it instead and replace the default file}
-
-\item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
+\item{normalize}{\code{TRUE} or \code{FALSE}, to normalize embedding or not. By default is \code{True}.}
 }
 \value{
 A list of information of meta-data, embedding & evaluation result. It will 

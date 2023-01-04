@@ -19,3 +19,4 @@ A dataframe of embedding.
 \description{
 Getting embedding from svd
 }
+\keyword{internal}

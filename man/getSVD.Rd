@@ -22,3 +22,4 @@ A list of matrix.
 \description{
 Getting randomized svd from SPPI.
 }
+\keyword{internal}

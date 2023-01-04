@@ -60,9 +60,8 @@
 </h1></div>
 <p>This is a package to:</p>
 <ul>
-<li><p>Generate Embedding</p></li>
-<li><p>Evaluate Embedding</p></li>
-<li><p>Get Evaluation Plots</p></li>
+<li><p>Generate / Evaluate Embedding</p></li>
+<li><p>Get Embedding Regression for Feature Selection</p></li>
 </ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -70,7 +69,7 @@
 <p>You can install the development version from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/remotes/man/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">KESER.i2b2</span><span class="op">)</span></span></code></pre></div>
 <p>If you can’t install it, alternative option is to download the repo and use <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code> to load the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -81,108 +80,100 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
+</div>
+<div class="section level2">
+<h2 id="step-1-get-embedding-from-co-ocuurence-matrix">Step 1: Get Embedding from Co-ocuurence Matrix.<a class="anchor" aria-label="anchor" href="#step-1-get-embedding-from-co-ocuurence-matrix"></a>
+</h2>
 <p>Make sure you have the following files available:</p>
 <ul>
-<li><p>Co-occurrence matrix file, such as <code>rpdr_code_cooccurrence_victor_2019.csv</code></p></li>
-<li><p>Co-occurrence matrix dict file (optional), such as <code>UPMC_AD_wordindex_mapping_datainfo.csv</code></p></li>
-<li><p>Co-occurrence matrix code frequency counts file (optional), such as <code>UPMC_AD_code_freq.csv</code></p></li>
+<li><p><code>CO_file</code>: Co-occurrence matrix file.</p></li>
+<li><p><code>freq_file</code>: Frequency Count file.</p></li>
 </ul>
 <p><strong>Note:</strong> The format of files can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p>
 <div class="section level3">
 <h3 id="input-file-data-structure-examples">Input File Data Structure Examples<a class="anchor" aria-label="anchor" href="#input-file-data-structure-examples"></a>
 </h3>
 <div class="section level4">
-<h4 id="co-occurrence-matrix-file-with-codes">Co-occurrence matrix file (with codes):<a class="anchor" aria-label="anchor" href="#co-occurrence-matrix-file-with-codes"></a>
+<h4 id="co-occurrence-matrix-file-co_file">Co-occurrence matrix file (<code>CO_file</code>):<a class="anchor" aria-label="anchor" href="#co-occurrence-matrix-file-co_file"></a>
 </h4>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   i         j           count</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 CCS-PCS:1 CCS-PCS:1    6318</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 CCS-PCS:1 CCS-PCS:10     14</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 CCS-PCS:1 CCS-PCS:100    40</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 CCS-PCS:1 CCS-PCS:101     8</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 CCS-PCS:1 CCS-PCS:102    13</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 CCS-PCS:1 CCS-PCS:103    12</span></span></code></pre></div>
-<p>The first two columns are the names of code. The third column is the count of the code pair.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 x 3</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    index1    index2      count</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;     &lt;chr&gt;       &lt;dbl&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 CCS-PCS:1 CCS-PCS:1    6318</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 CCS-PCS:1 CCS-PCS:10     14</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 CCS-PCS:1 CCS-PCS:100    40</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 CCS-PCS:1 CCS-PCS:101     8</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 CCS-PCS:1 CCS-PCS:102    13</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 CCS-PCS:1 CCS-PCS:103    12</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 CCS-PCS:1 CCS-PCS:104     8</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 CCS-PCS:1 CCS-PCS:105     3</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 CCS-PCS:1 CCS-PCS:107     1</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 CCS-PCS:1 CCS-PCS:108  1281</span></span></code></pre></div>
+<p>Columsn in order: <code>index1</code>, <code>index2</code>, <code>count</code>. The first two columns are the location indexes of code. The third column is the count of the code pair.</p>
 </div>
 <div class="section level4">
-<h4 id="co-occurrence-matrix-file-with-index">Co-occurrence matrix file (with index):<a class="anchor" aria-label="anchor" href="#co-occurrence-matrix-file-with-index"></a>
+<h4 id="frequency-counts-file-freq_file">Frequency counts file (<code>freq_file</code>):<a class="anchor" aria-label="anchor" href="#frequency-counts-file-freq_file"></a>
 </h4>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      i    j count</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1856 3004     1</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  671 8332    10</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 4737 4967    79</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  572 9233     1</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 1438 5749     3</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 1165 9479     1</span></span></code></pre></div>
-<p>The first two columns are the location indexes of code. The third column is the count of the code pair.</p>
-</div>
-<div class="section level4">
-<h4 id="co-occurrence-matrix-dict-file">Co-occurrence matrix dict file:<a class="anchor" aria-label="anchor" href="#co-occurrence-matrix-dict-file"></a>
-</h4>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 2</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   code        WordIndex</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 CCS-PCS:1           1</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 CCS-PCS:10          2</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 CCS-PCS:100         3</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 CCS-PCS:101         4</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 CCS-PCS:102         5</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 CCS-PCS:103         6</span></span></code></pre></div>
-<p>The first column is the name of code, the second column is the location index. Only use when the input is <strong>Co-occurrence matrix file with index</strong>.</p>
-</div>
-<div class="section level4">
-<h4 id="co-occurrence-matrix-code-frequency-counts-file">Co-occurrence matrix code frequency counts file:<a class="anchor" aria-label="anchor" href="#co-occurrence-matrix-code-frequency-counts-file"></a>
-</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 2</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   feature_id  feature_freq</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 CCS-PCS:1           1577</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 CCS-PCS:10           759</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 CCS-PCS:100        10303</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 CCS-PCS:101         5978</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 CCS-PCS:102         5258</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 CCS-PCS:103         1517</span></span></code></pre></div>
-<p>The first column is the name of code, the second column is the frequency counts.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 x 4</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    index code    description                                             freq_~1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                                                     &lt;dbl&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1     1 CCS:1   incision and excision of cns                               1577</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2     2 CCS:10  thyroidectomy, partial or complete                          759</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3     3 CCS:100 endoscopy and endoscopic biopsy of the urinary tract      10303</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4     4 CCS:101 transurethral excision, drainage, or removal urinary o~    5978</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5     5 CCS:102 ureteral catheterization                                   5258</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6     6 CCS:103 nephrotomy and nephrostomy                                 1517</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7     7 CCS:104 nephrectomy, partial or complete                            573</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8     8 CCS:105 kidney transplant                                           132</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9     9 CCS:106 genitourinary incontinence procedures                       631</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10    10 CCS:107 extracorporeal lithotripsy, urinary                        2229</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with abbreviated variable name 1: freq_count</span></span></code></pre></div>
+<p>Columsn in order: <code>index</code>, <code>code</code>, <code>description</code>, <code>freq_count</code>. The first column is the location index of code, the second column is the name of code, the third column is the description of code, the fourth column is the frequency count of code.</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="set-up-parameters">Set up Parameters<a class="anchor" aria-label="anchor" href="#set-up-parameters"></a>
 </h3>
 <p>For the file paths, change it base on your file locations. You can tune the dimensions on variable <code>dims</code>. The output files (<code>.Rdata</code> file &amp; report file) will be saved at <code>out_dir</code>. If <code>out_dir = NULL</code>, it will create a folder called <code>output</code> and put it there.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">CO_file</span> <span class="op">&lt;-</span> <span class="st">"dungeon//data//AD_cooccurence_result_1019.parquet"</span>  <span class="co"># Co-occurrence File: .csv/.parquet/.Rdata</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">CO_file</span> <span class="op">&lt;-</span> <span class="st">"dungeon//data//AD_cooccurence_result_1019.csv"</span>          <span class="co"># Co-occurrence File: .csv/.parquet/.Rdata</span></span>
+<span><span class="va">freq_file</span> <span class="op">&lt;-</span> <span class="st">"dungeon//data//AD_freq_file.csv"</span>                      <span class="co"># Frequency File: .csv/.parquet/.Rdata</span></span>
 <span><span class="va">dims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">1000</span>, <span class="fl">200</span><span class="op">)</span>                                         <span class="co"># Dimension Setting</span></span>
 <span><span class="va">out_dir</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>                                                     <span class="co"># Output folder setting -  If NULL All Outputs Will Be At: working_dir/output</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="generate-embedding--evaluation">Generate Embedding &amp; Evaluation<a class="anchor" aria-label="anchor" href="#generate-embedding--evaluation"></a>
 </h3>
-<p>If your Co-occurrence matrix file has code pairs, a dictionary is not needed:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_file</span>, </span>
-<span>                          dims <span class="op">=</span> <span class="va">dims</span>, </span>
-<span>                          out_dir <span class="op">=</span> <span class="va">out_dir</span><span class="op">)</span></span></code></pre></div>
-<p>Otherwise, if there’s no code pairs but index, a dictionary <code>CO_dict_file</code> is needed:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">CO_dict_file</span> <span class="op">&lt;-</span> <span class="st">"dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv"</span>   <span class="co"># Replace your dict file here </span></span>
-<span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_file</span>, </span>
-<span>                          dims <span class="op">=</span> <span class="va">dims</span>, </span>
-<span>                          out_dir <span class="op">=</span> <span class="va">out_dir</span>, </span>
-<span>                          CO_dict_file <span class="op">=</span> <span class="va">CO_dict_file</span><span class="op">)</span>   </span></code></pre></div>
-<p>Moreover, to further reduce the time cost, a code frequency counts file can be used to remove codes with low frequency. The default cutoff is set to <strong>1000</strong>. To change the cutoff, please refer to documents of function <code>get_eval_embed</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">freq_file</span> <span class="op">&lt;-</span> <span class="st">"dungeon//data//UPMC_AD_code_freq.csv"</span></span>
-<span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_file</span>, </span>
-<span>                          dims <span class="op">=</span> <span class="va">dims</span>, </span>
-<span>                          out_dir <span class="op">=</span> <span class="va">out_dir</span>, </span>
-<span>                          CO_dict_file <span class="op">=</span> <span class="va">CO_dict_file</span>, </span>
-<span>                          freq_file <span class="op">=</span> <span class="va">freq_file</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>freq_file</code> is used to map the codes from indexes, map the description and remove codes with low frequency in order to reduce the time cost. The default cutoff is set to <strong>1000</strong>. To change the cutoff, please refer to documents of function <code>get_eval_embed</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_file</span>,</span>
+<span>                          freq_file <span class="op">=</span> <span class="va">freq_file</span>,</span>
+<span>                          dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>                          out_dir <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> </span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="other-parameters">Other parameters:<a class="anchor" aria-label="anchor" href="#other-parameters"></a>
+</h2>
+<p><code>dims</code>: A vector of numeric values for dimension, by default is <code>seq(100, 1000, 100)</code>.</p>
+<p><code>out_dir</code>: The output folder to save results. By default is a folder call <code>output</code> under your current working directory. If not exists(NULL) it’ll generate it automatically.</p>
+<p><code>freq_min</code>: The frequency counts cutoff for code filtering. If the counts are less than <code>freq_min</code>, it’ll be filtered out. By default is <code>1000</code>.</p>
+<p><code>threshold</code>: Integer number, the threshold to get SPPMI matrix, by default is <code>10</code>.</p>
+<p><code>normalize</code>: <code>TRUE</code> or <code>FALSE</code>, to normalize embedding or not. By default is <code>True</code>.</p>
+<p>Example codes of all default input parameters:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_file</span>,</span>
+<span>                          freq_file <span class="op">=</span> <span class="va">freq_file</span>,</span>
+<span>                          dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">100</span><span class="op">)</span>,</span>
+<span>                          out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                          freq_min <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>                          threshold <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                          normalize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span></code></pre></div>
 <p>The output of <code>get_eval_embed</code> is a list includes meta-data, embedding &amp; evaluation results. The list will also be saved as <code>.Rdata</code>. It may take hours to run depending on your data size and hardware.</p>
 <div class="section level4">
 <h4 id="generate-plot-report">Generate Plot Report<a class="anchor" aria-label="anchor" href="#generate-plot-report"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/get_report.html">get_report</a></span><span class="op">(</span><span class="va">summary</span>, plot_val <span class="op">=</span> <span class="st">"auc"</span>, knit_format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
 <p><code>get_report</code> will not return anything but creates the plot report under <code>out_dir</code> folder. If <code>out_dir</code> is <code>NULL</code> then it will create a folder called <strong>output</strong> in your working directly.</p>
 </div>
@@ -190,14 +181,14 @@
 <h4 id="summary-object">Summary Object<a class="anchor" aria-label="anchor" href="#summary-object"></a>
 </h4>
 <p>The summary object includes <code>meta_data</code> and <code>summary</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><code>summary$meta_data</code> has the meta information. Inside the <code>summary$summary</code>, the next level is dimension value. Inside each dimension, there are <code>evaluation</code> and <code>embedding</code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">meta_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Let’s say you picked want to pick <code>dim=100</code> from the summary. this is the way to retrieve it:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_embed</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">$</span><span class="va">embedding</span></span>
 <span><span class="va">my_evaluation</span> <span class="op">&lt;-</span> <span class="va">summary</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">`100`</span><span class="op">$</span><span class="va">evaluation</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">my_embed</span><span class="op">)</span></span>
@@ -207,7 +198,7 @@
 <h4 id="retrieve-best-embedding">Retrieve Best Embedding<a class="anchor" aria-label="anchor" href="#retrieve-best-embedding"></a>
 </h4>
 <p>By default the best embedding is picking from the best <code>roc</code> with weighted relative (<code>weighted.rela</code>). You can change the setting in the function, please refer to the function documentation for more info.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_best_dim.html">get_best_dim</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span></span>
 <span><span class="va">best_dim</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">dim</span></span>
 <span><span class="va">best_embed</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">embedding</span></span>
@@ -218,9 +209,68 @@
 </h4>
 <p>The evaluation plots are saved as “Summary-XX-YY-ZZ.html”, and the original summary data are saved as “Summary-XX-YY-ZZ.Rdata”, where XX stands for starting dimension, YY stands for ending dimension and ZZ stands for Step.</p>
 <p>You can choose a proper dimension and use the corresponding embedding for the next steps.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="step-2-get-selected-features-with-embedding-regression">Step 2: Get Selected Features with Embedding Regression<a class="anchor" aria-label="anchor" href="#step-2-get-selected-features-with-embedding-regression"></a>
+</h2>
+<p>From above we know how to get the embedding from co-occurence matrix step by step. Further we’ll used the embedding to select related features for our interested PheCodes. Examples below will use <strong>RPDR</strong> data.</p>
+<p>First, let’s get the embedding from training data.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">CO_train</span> <span class="op">&lt;-</span> <span class="st">"D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_victor_2019.csv"</span> </span>
+<span><span class="va">CO_test</span> <span class="op">&lt;-</span> <span class="st">"D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_sample1_victor_2019.csv"</span> </span>
+<span><span class="va">out_dir</span> <span class="op">&lt;-</span> <span class="st">"H:\\test"</span>  </span>
+<span></span>
+<span><span class="co"># get embedding &amp; evaluation</span></span>
+<span><span class="va">summary_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_train</span>, </span>
+<span>                                freq_file <span class="op">=</span> <span class="va">freq_file</span>,</span>
+<span>                                dims <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1000</span>, <span class="fl">100</span><span class="op">)</span>, </span>
+<span>                                out_dir <span class="op">=</span> <span class="va">out_dir</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># get plot report (Optional)</span></span>
+<span><span class="fu"><a href="reference/get_report.html">get_report</a></span><span class="op">(</span><span class="va">summary_train</span>, plot_val <span class="op">=</span> <span class="st">"auc"</span>, knit_format <span class="op">=</span> <span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
+<p>Second, let’s get the training embedding with <strong>best auc</strong> of weighted relative. From below we can tell that the best dimension to use is <code>500</code>.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get best embedding based on best auc by weighted relative</span></span>
+<span><span class="va">best</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_best_dim.html">get_best_dim</a></span><span class="op">(</span><span class="va">summary_train</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">best</span><span class="op">$</span><span class="va">dim</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># get training &amp; testing embedding based on best dimension</span></span>
+<span><span class="va">embed_train</span> <span class="op">&lt;-</span> <span class="va">best</span><span class="op">$</span><span class="va">embedding</span></span>
+<span><span class="va">embed_valid</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_best_dim.html">get_best_dim</a></span><span class="op">(</span><span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_test</span>, </span>
+<span>                                           freq_file <span class="op">=</span> <span class="va">freq_file</span>,</span>
+<span>                                           dims <span class="op">=</span> <span class="va">best</span><span class="op">$</span><span class="va">dim</span>, </span>
+<span>                                           out_dir <span class="op">=</span> <span class="va">out_dir</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"embedding"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>Third, perform <strong>glmnet</strong> regression model based on embedding to get the related features (codes).</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get regression for embeding to select related codes</span></span>
+<span><span class="va">phecodes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PheCode:714.1"</span>, <span class="st">"PheCode:250.2"</span>, <span class="st">"PheCode:278.1"</span><span class="op">)</span>   <span class="co"># your interested PheCodes</span></span>
+<span><span class="va">lambda_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">51</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e-6</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">60</span>, <span class="fl">1000</span>, <span class="fl">50</span><span class="op">)</span> <span class="op">*</span> <span class="fl">1e-6</span><span class="op">)</span>   <span class="co"># the lambda candidates for glmnet</span></span>
+<span><span class="va">alpha</span> <span class="op">=</span> <span class="fl">0.25</span>    <span class="co"># alpha value for glmnet</span></span>
+<span><span class="va">regression_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_embed_regression.html">get_embed_regression</a></span><span class="op">(</span>embed_train <span class="op">=</span> <span class="va">embed_train</span>, </span>
+<span>                                           embed_valid <span class="op">=</span> <span class="va">embed_valid</span>, </span>
+<span>                                           phecodes <span class="op">=</span> <span class="va">phecodes</span>,</span>
+<span>                                           dim <span class="op">=</span> <span class="va">best</span><span class="op">$</span><span class="va">dim</span>,</span>
+<span>                                           lambda_vec <span class="op">=</span> <span class="va">lambda_vec</span>,</span>
+<span>                                           alpha <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></code></pre></div>
+<p>Then, you can access the results in <code>regression_summary</code>.</p>
+<p><code>regression_summary$summary_data</code> is the selected features with beta’s, cosine values &amp; descriptions for interested PheCode.</p>
+<p><code>regression_summary$Nlist</code> is the number of non-zero betas for each lambda selected.</p>
+<p><code>regression_summary$min_lambdas</code> is the lambda selected for minimum AIC + testing residuals.</p>
+<p><code>regression_summary$eval_plots</code> is the evaluation plots of testing residual over lambda.</p>
+<p><code>regression_summary$wordcloud_plots</code> is the word cloud plot magnified by cosine value, which indicates the relatedness of codes to the interested PheCode.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">summary_data</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">Nlist</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">min_lambdas</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">eval_plots</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">wordcloud_plots</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Warning:</strong> The evaluation plots of <strong>Test set + AIC</strong> should be <strong>U Curve</strong>. Otherwise it’s not correct. If the U Curve does not occur, tune the <code>lambda_vec</code> and <code>alpha</code> to and repeat the step 2 again. Given that the <strong>lambda_vec</strong> is highly data specific, it’s very likely that you need to tune it by yourself.</p>
+<p>Example of Valid Evaluation (U Shape) :</p>
+<p><img src="inst%5Cpng%5Cvalid_regression.png"> </p>
+<p>Example of Invalid Evaluation Plot (Non-U Shape):</p>
+<p><img src="inst%5Cpng%5Cinvalid_regression.png"> </p>
 <p>See the <a href="https://celehs.github.io/KESER-i2b2/" class="external-link">Documentation</a> to learn more.</p>
-</div>
-</div>
 </div>
 </div>
   </div>
