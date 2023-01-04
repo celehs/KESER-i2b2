@@ -39,9 +39,6 @@ get_eval_embed <- function(CO_file,
   
   # Get Summary
   ################################################################################
-  CO_file <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\AD_cooccurence_result_1019.csv"
-  freq_file <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\AD_freq_file.csv"
-  
   
   # Set Up Output Folder
   out_dir <- ifelse(is.null(out_dir), file.path(getwd(), "output"), path_chk(out_dir))

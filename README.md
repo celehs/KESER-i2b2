@@ -217,15 +217,11 @@ data.
 First, let’s get the embedding from training data.
 
 ``` r
-CO_train <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_victor_2019.csv" 
-CO_test <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\rpdr\\rpdr_code_cooccurrence_sample1_victor_2019.csv" 
-out_dir <- "H:\\test"  
-
 # get embedding & evaluation
 summary_train <- get_eval_embed(CO_file = CO_train, 
                                 freq_file = freq_file,
                                 dims = seq(100, 1000, 100), 
-                                out_dir = out_dir)
+                                out_dir = "H:\\test")
 
 # get plot report (Optional)
 get_report(summary_train, plot_val = "auc", knit_format = "html")
