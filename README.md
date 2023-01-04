@@ -294,11 +294,11 @@ need to tune it by yourself.
 
 Example of Valid Evaluation (U Shape) :
 
-![](inst\png\valid_regression.png) 
+![](man/figures/valid_regression.png) 
 
 Example of Invalid Evaluation Plot (Non-U Shape):
 
-![](inst\png\invalid_regression.png) 
+![](man/figures/invalid_regression.png) 
 
 See the [Documentation](https://celehs.github.io/KESER-i2b2/) to learn
 more.
