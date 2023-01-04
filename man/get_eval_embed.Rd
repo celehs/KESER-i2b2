@@ -6,17 +6,12 @@
 \usage{
 get_eval_embed(
   CO_file,
+  freq_file,
   dims = seq(100, 1000, 100),
   out_dir = NULL,
-  CO_dict_file = NULL,
-  freq_file = NULL,
   freq_min = 1000,
   threshold = 10,
-  data_type = 1,
-  HAM_file = NULL,
-  ARP_file = NULL,
-  normalize = TRUE,
-  labels = NULL
+  normalize = TRUE
 )
 }
 \arguments{
@@ -34,24 +29,16 @@ from id to code pair is needed. Please see \code{CO_dict_file} for details.}
 
 \item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
 
+\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is 10.}
+
+\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
+
 \item{CO_dict_file}{A data file with two columns, where:
 \itemize{
 \item{\code{Column 1}: Shows the name of code pair.}
 \item{\code{Column 2}: Shows the corresponding id number.}
 }
 File format can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
-\item{freq_file}{A data file with two columns, where:
-\itemize{
-\item{\code{Column 1}: Shows the name of unique codes.}
-\item{\code{Column 2}: Shows the corresponding frequency counts.}
-}
-Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
-\item{freq_min}{Frequency cutoff, codes with frequency count below \code{freq_min}
-will be removed.}
-
-\item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is 10.}
 
 \item{data_type}{If data Does not contain CUI codes, set as \code{1}. Otherwise, set as \code{2}.}
 
@@ -60,13 +47,6 @@ By default it's set to \code{NULL} and read the default file within the package.
 If a file name is offered, it'll read it instead and replace the default file}
 
 \item{ARP_file}{All relation pairs data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
-\item{normalize}{\code{TRUE} or \code{TFALSE}, to normalize embedding or not.}
-
-\item{labels}{A character vector of labels in evaluations summary. Values can be 
-\code{"PheCode-PheCode(sim)", "RXNORM-RXNORM(sim)", "LAB-LAB(sim)", 
-"PheCode-PheCode(rela)", "PheCode-RXNORM(rela)", "PheCode-CCS(rela)", "PheCode-LAB(rela)"} .
-If \code{NULL} then all labels will be used.}
 }
 \value{
 A list of information of meta-data, embedding & evaluation result. It will 

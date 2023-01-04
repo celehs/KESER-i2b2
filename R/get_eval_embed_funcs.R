@@ -627,33 +627,18 @@ read_file <- function(file_name) {
 
 #' Functions to map CO codes from CO dict
 #' 
-#' @param CO COOC (Co-occurrence) matrix, Should be a triple form.
-#' \itemize{
-#' \item{\code{V1}}: Shows the row id (code id).
-#' \item{\code{V2}}: Shows the col id (code id).
-#' \item{\code{V3}}: Shows the counts for certain pair.
-#' }
-#' @param CO_dict COOC matrix dictionary, Should be a double form.
-#' \itemize{
-#' \item{\code{code}}: The code pair.
-#' \item{\code{index}}: The index for code pair.
-#' }
-#' @return A DataFrame, new COOC with code pairs matched.
-#' @export
-map_CO <- function(CO,  CO_dict) {
-  CO_cols <- colnames(CO)
-  colnames(CO) <- c("V1", "V2", "V3")
-  colnames(CO_dict) <- c("code", "index")
-  V1 <- CO %>% dplyr::left_join(CO_dict, by = c("V1" = "index"))
-  V2 <- CO %>% dplyr::left_join(CO_dict, by = c("V2" = "index"))
-  CO_new <- data.frame(V1 = V1[["code"]], V2 = V2[["code"]], V3 = CO[["V3"]])
-  V1_NA <- V1[["V1"]][is.na(CO_new[["V1"]])]
-  V2_NA <- V2[["V2"]][is.na(CO_new[["V2"]])]
-  NAs <- append(V1_NA, V2_NA)
+#' @keywords internal
+map_CO <- function(CO, freq) {
+  code_dict <- freq %>% dplyr::select(index, code)
+  index1 <- CO %>% dplyr::left_join(code_dict, by = c("index1" = "index"))
+  index2 <- CO %>% dplyr::left_join(code_dict, by = c("index2" = "index"))
+  CO_new <- data.frame(cod1 = index1[["code"]], code2 = index2[["code"]], count = CO[["count"]])
+  index1_NA <- index1[["index1"]][is.na(CO_new[["code1"]])]
+  index1_NA <- index2[["index2"]][is.na(CO_new[["code2"]])]
+  NAs <- append(index1_NA, index1_NA)
   if (length(NAs) != 0) {
     stop(paste0("\nCode Pairs Not Found for below index:\n", NAs))
   }
-  colnames(CO_new) <- CO_cols
   return(CO_new)
 }
 
@@ -666,27 +651,12 @@ get_unique_codes <- function(CO) {
 
 #' Function to remove CO codes by frequency cutoff
 #' 
-#' @inheritParams map_CO
-#' @param freq_file A data file with two columns, where:
-#' \itemize{
-#' \item{\code{Column 1}: Shows the name of unique codes.}
-#' \item{\code{Column 2}: Shows the corresponding frequency counts.}
-#' }
-#' Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.
-#' @param freq_min Frequency cutoff, codes with frequency count below \code{freq_min}
-#' will be removed.
-#' @export
-clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
+#' @keywords internal
+clear_CO <- function(CO, freq, freq_min=1000) {
   cat(paste0("\nRules: Codes with frequency counts less than ", freq_min, " will be remove from CO.\n"))
-  if (is.null(freq_file)) {
-    cat("\nFrequency file not offered, no codes will be removed.\n")
-    return(CO)
-  }
   colnames(CO) <- c("V1", "V2", "V3")
-  df_freq <- read_file(freq_file)
-  colnames(df_freq) = c("code", "freq")
   codes_co <- get_unique_codes(CO)
-  codes_rm <- df_freq %>% dplyr::filter(freq < freq_min) %>% 
+  codes_rm <- freq %>% dplyr::filter(freq_count < freq_min) %>% 
     dplyr::select(code) %>% dplyr::pull() %>% unique() %>% intersect(codes_co)
   cat(paste0("\n", length(codes_rm), "/", length(codes_co), " unique codes in CO will be removed."))
   CO_clear <- CO %>% dplyr::filter(!(V1 %in% codes_rm) & !(V2 %in% codes_rm))
@@ -694,6 +664,7 @@ clear_CO <- function(CO, freq_file=NULL, freq_min=1000) {
 }
 
 #' Function to check memory
+
 #' @keywords internal
 memory_chk <- function(CO) {
   os <- Sys.info()["sysname"]
@@ -751,8 +722,8 @@ path_chk <- function(path) {
 #' Function to check CO data
 #' @keywords internal
 chk_CO <- function(CO) {
-  cat("\n\n- Codes ending with '-PCS' will be cleared as: 'Code-PCS' to 'Code'\n")
-  CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))
+  # cat("\n\n- Codes ending with '-PCS' will be cleared as: 'Code-PCS' to 'Code'\n")
+  # CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))
   cat("- Valid codes: ",  paste0(VALID_CODES, collapse=", "), "\n")
   cat("- Examples: LOINC:15429, RXNORM:248656, PheCode:426.92, CCS:143\n")
   CO_Unique_codes <- get_unique_codes(CO)

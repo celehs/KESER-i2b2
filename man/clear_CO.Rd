@@ -4,26 +4,9 @@
 \alias{clear_CO}
 \title{Function to remove CO codes by frequency cutoff}
 \usage{
-clear_CO(CO, freq_file = NULL, freq_min = 1000)
-}
-\arguments{
-\item{CO}{COOC (Co-occurrence) matrix, Should be a triple form.
-\itemize{
-\item{\code{V1}}: Shows the row id (code id).
-\item{\code{V2}}: Shows the col id (code id).
-\item{\code{V3}}: Shows the counts for certain pair.
-}}
-
-\item{freq_file}{A data file with two columns, where:
-\itemize{
-\item{\code{Column 1}: Shows the name of unique codes.}
-\item{\code{Column 2}: Shows the corresponding frequency counts.}
-}
-Format of \code{freq_file} can be \code{.csv}, \code{.parquet} or \code{.Rdata}.}
-
-\item{freq_min}{Frequency cutoff, codes with frequency count below \code{freq_min}
-will be removed.}
+clear_CO(CO, freq, freq_min = 1000)
 }
 \description{
 Function to remove CO codes by frequency cutoff
 }
+\keyword{internal}

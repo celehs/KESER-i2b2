@@ -33,21 +33,19 @@
 #' 
 #' @export
 get_eval_embed <- function(CO_file, 
+                           freq_file,
                            dims = seq(100, 1000, 100),
-                           out_dir = NULL, 
-                           CO_dict_file = NULL,
-                           freq_file = NULL,
+                           out_dir = NULL,
                            freq_min = 1000,
                            threshold = 10,
-                           data_type = 1,
-                           HAM_file = NULL,
-                           ARP_file= NULL,
-                           normalize = TRUE,
-                           labels = NULL) {
+                           normalize = TRUE) {
       
   
   # Get Summary
   ################################################################################
+  CO_file <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\AD_cooccurence_result_1019.csv"
+  freq_file <- "D:\\Documents\\Projects\\harvard\\keser-i2b2\\dungeon\\data\\AD_freq_file.csv"
+  
   
   # Set Up Output Folder
   out_dir <- ifelse(is.null(out_dir), file.path(getwd(), "output"), path_chk(out_dir))
@@ -56,29 +54,21 @@ get_eval_embed <- function(CO_file,
   
   # Load Data
   cat("\nLoading data...")
-  CO <- read_file(path_chk(CO_file))
+  CO_idx <- read_file(path_chk(CO_file))
+  freq <- read_file(path_chk(freq_file))
   
-  # Load HAM_file & ARP_file If Specified
-  if (!is.null(HAM_file)) {
-    cat("\nHierarchy file specified by user.")
-    MAH <- read_file(path_chk(HAM_file))
+  # Check Input Files
+  if (any(colnames(CO_idx) != c("index1", "index2", "count"))) {
+    stop("Invalid Column names for CO_file, should be: index1, index2, count")
   }
-  if (!is.null(ARP_file)) {
-    cat("\nAll relation pairs file specified by user.")
-    ARP <- read_file(path_chk(ARP_file))
-  }
- 
-  # Check & Map CO
-  if (class(CO[[1]]) == "integer") {
-    if (is.null(CO_dict_file)) stop("Please provide CO dict.") else {
-      
-      # Map CO If CO Dict Passed
-      CO_dict <- read_file(path_chk(CO_dict_file))
-      cat("\nMapping CO codes from CO dict...")
-      CO <- map_CO(CO, CO_dict)
-    }
+  if (any(colnames(freq) != c("index", "code", "description", "freq_count"))) {
+    stop("Invalid Column names for CO_file, should be: index1, code, description, freq_count")
   }
   
+  # Map CO from index to codes
+  cat("\nMapping CO codes...")
+  CO <- map_CO(CO_idx, freq)
+
   # Change CO Column Names
   colnames(CO) <- c("V1", "V2", "V3")
   
@@ -88,7 +78,7 @@ get_eval_embed <- function(CO_file,
   
   # Clear Codes (Remove codes less than a certain frequency)
   cat("\nClearing codes ...")
-  CO <- clear_CO(CO, freq_file, freq_min)
+  CO <- clear_CO(CO, freq, freq_min)
   
   # Check Memory
   cat("\nMemory check...\n")
@@ -153,11 +143,8 @@ get_eval_embed <- function(CO_file,
     #########################################################################
     # Evaluate Embedding
     cat("\nEvaluating...")
-    if (data_type == 1) {
-      ans = Evaluate_codi(embed, AllRelationPairs = ARP, normalize = !normalize)  # data_type == 1: codi only, if embedding normalized, evaluation should not be normalized again.
-    } else if (data_type == 2) {
-      ans = Evaluate(embed, AllRelationPairs = ARP, normalize = !normalize)       # data_type == 2: codi & CUI, if embedding normalized, evaluation should not be normalized again.
-    } else stop("Invalid Value: 'data_type' should be 1 or 2.")
+    ans = Evaluate_codi(embed, AllRelationPairs = ARP, normalize = !normalize)  # codi only, if embedding normalized, evaluation should not be normalized again.
+
     #########################################################################
     
     

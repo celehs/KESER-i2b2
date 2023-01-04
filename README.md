@@ -5,11 +5,7 @@
 
 This is a package to:
 
-- Generate Embedding
-
-- Evaluate Embedding
-
-- Get Evaluation Plots
+- Generate / Evaluate Embedding
 
 - Get Embedding Regression for Feature Selection
 
@@ -38,77 +34,55 @@ devtools::load_all()
 
 Make sure you have the following files available:
 
-- Co-occurrence matrix file, such as
-  `rpdr_code_cooccurrence_victor_2019.csv`
+- `CO_file`: Co-occurrence matrix file.
 
-- Co-occurrence matrix dict file (optional), such as
-  `UPMC_AD_wordindex_mapping_datainfo.csv`
-
-- Co-occurrence matrix code frequency counts file (optional), such as
-  `UPMC_AD_code_freq.csv`
+- `freq_file`: Frequency Count file.
 
 **Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`.
 
 ### Input File Data Structure Examples
 
-#### Co-occurrence matrix file (with codes):
+#### Co-occurrence matrix file (`CO_file`):
 
-    #> # A tibble: 6 x 3
-    #>   i         j           count
-    #>   <chr>     <chr>       <dbl>
-    #> 1 CCS-PCS:1 CCS-PCS:1    6318
-    #> 2 CCS-PCS:1 CCS-PCS:10     14
-    #> 3 CCS-PCS:1 CCS-PCS:100    40
-    #> 4 CCS-PCS:1 CCS-PCS:101     8
-    #> 5 CCS-PCS:1 CCS-PCS:102    13
-    #> 6 CCS-PCS:1 CCS-PCS:103    12
+    #> # A tibble: 10 x 3
+    #>    index1    index2      count
+    #>    <chr>     <chr>       <dbl>
+    #>  1 CCS-PCS:1 CCS-PCS:1    6318
+    #>  2 CCS-PCS:1 CCS-PCS:10     14
+    #>  3 CCS-PCS:1 CCS-PCS:100    40
+    #>  4 CCS-PCS:1 CCS-PCS:101     8
+    #>  5 CCS-PCS:1 CCS-PCS:102    13
+    #>  6 CCS-PCS:1 CCS-PCS:103    12
+    #>  7 CCS-PCS:1 CCS-PCS:104     8
+    #>  8 CCS-PCS:1 CCS-PCS:105     3
+    #>  9 CCS-PCS:1 CCS-PCS:107     1
+    #> 10 CCS-PCS:1 CCS-PCS:108  1281
 
-The first two columns are the names of code. The third column is the
-count of the code pair.
+Columsn in order: `index1`, `index2`, `count`. The first two columns are
+the location indexes of code. The third column is the count of the code
+pair.
 
-#### Co-occurrence matrix file (with index):
+#### Frequency counts file (`freq_file`):
 
-    #>      i    j count
-    #> 1 1856 3004     1
-    #> 2  671 8332    10
-    #> 3 4737 4967    79
-    #> 4  572 9233     1
-    #> 5 1438 5749     3
-    #> 6 1165 9479     1
+    #> # A tibble: 10 x 4
+    #>    index code    description                                             freq_~1
+    #>    <dbl> <chr>   <chr>                                                     <dbl>
+    #>  1     1 CCS:1   incision and excision of cns                               1577
+    #>  2     2 CCS:10  thyroidectomy, partial or complete                          759
+    #>  3     3 CCS:100 endoscopy and endoscopic biopsy of the urinary tract      10303
+    #>  4     4 CCS:101 transurethral excision, drainage, or removal urinary o~    5978
+    #>  5     5 CCS:102 ureteral catheterization                                   5258
+    #>  6     6 CCS:103 nephrotomy and nephrostomy                                 1517
+    #>  7     7 CCS:104 nephrectomy, partial or complete                            573
+    #>  8     8 CCS:105 kidney transplant                                           132
+    #>  9     9 CCS:106 genitourinary incontinence procedures                       631
+    #> 10    10 CCS:107 extracorporeal lithotripsy, urinary                        2229
+    #> # ... with abbreviated variable name 1: freq_count
 
-The first two columns are the location indexes of code. The third column
-is the count of the code pair.
-
-#### Co-occurrence matrix dict file:
-
-    #> # A tibble: 6 x 2
-    #>   code        WordIndex
-    #>   <chr>           <dbl>
-    #> 1 CCS-PCS:1           1
-    #> 2 CCS-PCS:10          2
-    #> 3 CCS-PCS:100         3
-    #> 4 CCS-PCS:101         4
-    #> 5 CCS-PCS:102         5
-    #> 6 CCS-PCS:103         6
-
-The first column is the name of code, the second column is the location
-index. Only use when the input is **Co-occurrence matrix file with
-index**.
-
-#### Co-occurrence matrix code frequency counts file:
-
-    #> # A tibble: 6 x 2
-    #>   feature_id  feature_freq
-    #>   <chr>              <dbl>
-    #> 1 CCS-PCS:1           1577
-    #> 2 CCS-PCS:10           759
-    #> 3 CCS-PCS:100        10303
-    #> 4 CCS-PCS:101         5978
-    #> 5 CCS-PCS:102         5258
-    #> 6 CCS-PCS:103         1517
-
-The first column is the name of code, the second column is the frequency
-counts.
+Columsn in order: `index`, `code`, `description`, `freq_count`. The
+first column is the location index of code, the second column is the
+name of code, the third column is the description of code, the fourth
+column is the frequency count of code.
 
 ### Set up Parameters
 
@@ -118,45 +92,55 @@ report file) will be saved at `out_dir`. If `out_dir = NULL`, it will
 create a folder called `output` and put it there.
 
 ``` r
-CO_file <- "dungeon//data//AD_cooccurence_result_1019.parquet"  # Co-occurrence File: .csv/.parquet/.Rdata
+CO_file <- "dungeon//data//AD_cooccurence_result_1019.csv"          # Co-occurrence File: .csv/.parquet/.Rdata
+freq_file <- "dungeon//data//AD_freq_file.csv"                      # Frequency File: .csv/.parquet/.Rdata
 dims <- seq(200, 1000, 200)                                         # Dimension Setting
 out_dir <- NULL                                                     # Output folder setting -  If NULL All Outputs Will Be At: working_dir/output
 ```
 
 ### Generate Embedding & Evaluation
 
-If your Co-occurrence matrix file has code pairs, a dictionary is not
-needed:
+The `freq_file` is used to map the codes from indexes, map the
+description and remove codes with low frequency in order to reduce the
+time cost. The default cutoff is set to **1000**. To change the cutoff,
+please refer to documents of function `get_eval_embed`.
 
 ``` r
-summary <- get_eval_embed(CO_file = CO_file, 
-                          dims = dims, 
-                          out_dir = out_dir)
+summary <- get_eval_embed(CO_file = CO_file,
+                          freq_file = freq_file,
+                          dims = seq(100, 1000, 100),
+                          out_dir = NULL) 
 ```
 
-Otherwise, if there’s no code pairs but index, a dictionary
-`CO_dict_file` is needed:
+## Other parameters:
+
+`dims`: A vector of numeric values for dimension, by default is
+`seq(100, 1000, 100)`.
+
+`out_dir`: The output folder to save results. By default is a folder
+call `output` under your current working directory. If not exists(NULL)
+it’ll generate it automatically.
+
+`freq_min`: The frequency counts cutoff for code filtering. If the
+counts are less than `freq_min`, it’ll be filtered out. By default is
+`1000`.
+
+`threshold`: Integer number, the threshold to get SPPMI matrix, by
+default is `10`.
+
+`normalize`: `TRUE` or `FALSE`, to normalize embedding or not. By
+default is `True`.
+
+Example codes of all default input parameters:
 
 ``` r
-CO_dict_file <- "dungeon//data//UPMC_AD_wordindex_mapping_datainfo.csv"   # Replace your dict file here 
-summary <- get_eval_embed(CO_file = CO_file, 
-                          dims = dims, 
-                          out_dir = out_dir, 
-                          CO_dict_file = CO_dict_file)   
-```
-
-Moreover, to further reduce the time cost, a code frequency counts file
-can be used to remove codes with low frequency. The default cutoff is
-set to **1000**. To change the cutoff, please refer to documents of
-function `get_eval_embed`.
-
-``` r
-freq_file <- "dungeon//data//UPMC_AD_code_freq.csv"
-summary <- get_eval_embed(CO_file = CO_file, 
-                          dims = dims, 
-                          out_dir = out_dir, 
-                          CO_dict_file = CO_dict_file, 
-                          freq_file = freq_file)
+summary <- get_eval_embed(CO_file = CO_file,
+                          freq_file = freq_file,
+                          dims = seq(100, 1000, 100),
+                          out_dir = NULL,
+                          freq_min = 1000,
+                          threshold = 10,
+                          normalize = TRUE) 
 ```
 
 The output of `get_eval_embed` is a list includes meta-data, embedding &
@@ -239,6 +223,7 @@ out_dir <- "H:\\test"
 
 # get embedding & evaluation
 summary_train <- get_eval_embed(CO_file = CO_train, 
+                                freq_file = freq_file,
                                 dims = seq(100, 1000, 100), 
                                 out_dir = out_dir)
 
@@ -258,6 +243,7 @@ print(best$dim)
 # get training & testing embedding based on best dimension
 embed_train <- best$embedding
 embed_valid <- get_best_dim(get_eval_embed(CO_file = CO_test, 
+                                           freq_file = freq_file,
                                            dims = best$dim, 
                                            out_dir = out_dir))[["embedding"]]
 ```

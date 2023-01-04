@@ -4,25 +4,9 @@
 \alias{map_CO}
 \title{Functions to map CO codes from CO dict}
 \usage{
-map_CO(CO, CO_dict)
-}
-\arguments{
-\item{CO}{COOC (Co-occurrence) matrix, Should be a triple form.
-\itemize{
-\item{\code{V1}}: Shows the row id (code id).
-\item{\code{V2}}: Shows the col id (code id).
-\item{\code{V3}}: Shows the counts for certain pair.
-}}
-
-\item{CO_dict}{COOC matrix dictionary, Should be a double form.
-\itemize{
-\item{\code{code}}: The code pair.
-\item{\code{index}}: The index for code pair.
-}}
-}
-\value{
-A DataFrame, new COOC with code pairs matched.
+map_CO(CO, freq)
 }
 \description{
 Functions to map CO codes from CO dict
 }
+\keyword{internal}
