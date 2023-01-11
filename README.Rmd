@@ -175,12 +175,12 @@ You can choose a proper dimension and use the corresponding embedding for the ne
 
 From above we know how to get the embedding from co-occurence matrix step by step. Further we'll used the embedding to select related features for our interested PheCodes. Examples below will use **RPDR** data.
 
-First, let's get the embedding from training data.
+First, let's get the embedding from training data. Assume that you have training/testing CO file and freq file named as `CO_train`/`CO_test` and `freq_file_train`/`freq_file_test`.
 
 ```{r eval=FALSE}
 # get embedding & evaluation
 summary_train <- get_eval_embed(CO_file = CO_train, 
-                                freq_file = freq_file,
+                                freq_file = freq_file_train,
                                 dims = seq(100, 1000, 100), 
                                 out_dir = "H:\\test")
 
@@ -188,7 +188,7 @@ summary_train <- get_eval_embed(CO_file = CO_train,
 get_report(summary_train, plot_val = "auc", knit_format = "html")
 ```
 
-Second, let's get the training embedding with **best auc** of weighted relative. From below we can tell that the best dimension to use is `500`. 
+Second, let's get the training embedding with **best auc** of weighted relative. We can the best dimension by accessing `best$dim` below.  
 
 ```{r eval=FALSE}
 # get best embedding based on best auc by weighted relative
@@ -198,17 +198,17 @@ print(best$dim)
 # get training & testing embedding based on best dimension
 embed_train <- best$embedding
 embed_valid <- get_best_dim(get_eval_embed(CO_file = CO_test, 
-                                           freq_file = freq_file,
+                                           freq_file = freq_file_test,
                                            dims = best$dim, 
                                            out_dir = out_dir))[["embedding"]]
 ```
 
-Third, perform **glmnet** regression model based on embedding to get the related features (codes).
+Third, perform **glmnet** regression model based on embedding to get the related features (codes) for interested PheCodes Let's assume your interested PheCodes are `PheCode:714.1`, `PheCode:250.2` and `PheCode:278.1`.
 
 ```{r eval=FALSE}
 # get regression for embeding to select related codes
 phecodes <- c("PheCode:714.1", "PheCode:250.2", "PheCode:278.1")   # your interested PheCodes
-lambda_vec <- c(seq(1, 51, 1) * 1e-6, seq(60, 1000, 50) * 1e-6)   # the lambda candidates for glmnet
+lambda_vec <- c(seq(1, 51, 1) * 1e-6, seq(60, 1000, 50) * 1e-6)    # the lambda candidates for glmnet, this is also the default value.
 alpha = 0.25    # alpha value for glmnet
 regression_summary <- get_embed_regression(embed_train = embed_train, 
                                            embed_valid = embed_valid, 
