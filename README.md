@@ -11,7 +11,7 @@ This is a package to:
 
 ## Installation
 
-Your R version should be `>= 3.3.0`.You can install the development
+Your R version should be `>= 3.3.0`. You can install the development
 version from GitHub with:
 
 ``` r
@@ -220,9 +220,12 @@ step by step. Further we’ll used the embedding to select related
 features for our interested PheCodes. Examples below will use **RPDR**
 data.
 
-First, let’s get the embedding from training data. Assume that you have
-training/testing CO files and freq files named as `CO_train`/`CO_test`
-and `freq_file_train`/`freq_file_test`.
+We recommend using 80% data to create a training co-occurence matrix and
+20% data to create a validation co-occurrence matrix. Assume that you
+already have training/testing CO files and freq files named as
+`CO_train`/`CO_test` and `freq_file_train`/`freq_file_test`.
+
+First, let’s get the embedding from training data.
 
 ``` r
 # get embedding & evaluation

@@ -66,7 +66,7 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Your R version should be <code>&gt;= 3.3.0</code>.You can install the development version from GitHub with:</p>
+<p>Your R version should be <code>&gt;= 3.3.0</code>. You can install the development version from GitHub with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
@@ -216,7 +216,8 @@
 <h2 id="step-2-get-selected-features-with-embedding-regression">Step 2: Get Selected Features with Embedding Regression<a class="anchor" aria-label="anchor" href="#step-2-get-selected-features-with-embedding-regression"></a>
 </h2>
 <p>From above we know how to get the embedding from co-occurence matrix step by step. Further we’ll used the embedding to select related features for our interested PheCodes. Examples below will use <strong>RPDR</strong> data.</p>
-<p>First, let’s get the embedding from training data. Assume that you have training/testing CO files and freq files named as <code>CO_train</code>/<code>CO_test</code> and <code>freq_file_train</code>/<code>freq_file_test</code>.</p>
+<p>We recommend using 80% data to create a training co-occurence matrix and 20% data to create a validation co-occurrence matrix. Assume that you already have training/testing CO files and freq files named as <code>CO_train</code>/<code>CO_test</code> and <code>freq_file_train</code>/<code>freq_file_test</code>.</p>
+<p>First, let’s get the embedding from training data.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get embedding &amp; evaluation</span></span>
 <span><span class="va">summary_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_eval_embed.html">get_eval_embed</a></span><span class="op">(</span>CO_file <span class="op">=</span> <span class="va">CO_train</span>, </span>
