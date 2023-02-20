@@ -11,7 +11,8 @@ This is a package to:
 
 ## Installation
 
-You can install the development version from GitHub with:
+Your R version should be `>= 3.3.0`.You can install the development
+version from GitHub with:
 
 ``` r
 install.packages("remotes")
@@ -45,18 +46,18 @@ Make sure you have the following files available:
 #### Co-occurrence matrix file (`CO_file`):
 
     #> # A tibble: 10 x 3
-    #>    index1    index2      count
-    #>    <chr>     <chr>       <dbl>
-    #>  1 CCS-PCS:1 CCS-PCS:1    6318
-    #>  2 CCS-PCS:1 CCS-PCS:10     14
-    #>  3 CCS-PCS:1 CCS-PCS:100    40
-    #>  4 CCS-PCS:1 CCS-PCS:101     8
-    #>  5 CCS-PCS:1 CCS-PCS:102    13
-    #>  6 CCS-PCS:1 CCS-PCS:103    12
-    #>  7 CCS-PCS:1 CCS-PCS:104     8
-    #>  8 CCS-PCS:1 CCS-PCS:105     3
-    #>  9 CCS-PCS:1 CCS-PCS:107     1
-    #> 10 CCS-PCS:1 CCS-PCS:108  1281
+    #>    index1 index2 count
+    #>     <dbl>  <dbl> <dbl>
+    #>  1   1856   3004     1
+    #>  2    671   8332    10
+    #>  3   4737   4967    79
+    #>  4    572   9233     1
+    #>  5   1438   5749     3
+    #>  6   1165   9479     1
+    #>  7    114   3907    51
+    #>  8   8752   9185   273
+    #>  9    587   9001    20
+    #> 10   1175   3675    46
 
 Columsn in order: `index1`, `index2`, `count`. The first two columns are
 the location indexes of code. The third column is the count of the code
@@ -79,10 +80,15 @@ pair.
     #> 10    10 CCS:107 extracorporeal lithotripsy, urinary                        2229
     #> # ... with abbreviated variable name 1: freq_count
 
-Columsn in order: `index`, `code`, `description`, `freq_count`. The
+Columns in order: `index`, `code`, `description`, `freq_count`. The
 first column is the location index of code, the second column is the
 name of code, the third column is the description of code, the fourth
 column is the frequency count of code.
+
+**Note**: All values in columns `index1` and `index2` of `CO_file`
+should also be covered in column `index` of `freq_file`. Due to size
+limitation, data examples above are only a small snippet of full data,
+hence it can **NOT** serve as running examples!
 
 ### Set up Parameters
 
@@ -215,8 +221,8 @@ features for our interested PheCodes. Examples below will use **RPDR**
 data.
 
 First, let’s get the embedding from training data. Assume that you have
-training/testing CO file and freq file named as `CO_train`/`CO_test` and
-`freq_file_train`/`freq_file_test`.
+training/testing CO files and freq files named as `CO_train`/`CO_test`
+and `freq_file_train`/`freq_file_test`.
 
 ``` r
 # get embedding & evaluation

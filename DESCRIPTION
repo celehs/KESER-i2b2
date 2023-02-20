@@ -25,6 +25,7 @@ Imports:
 	arrow,
 	Matrix,
 	glmnet,
-	wordcloud2
+	wordcloud2,
+	pandoc
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1

@@ -22,7 +22,7 @@ This is a package to:
 
 ## Installation
 
-You can install the development version from GitHub with:
+Your R version should be `>= 3.3.0`.You can install the development version from GitHub with:
 
 ```{r eval=FALSE}
 install.packages("remotes")
@@ -71,7 +71,9 @@ Columsn in order: `index1`, `index2`, `count`. The first two columns are the loc
 print(FREQ_EXAMPLE)
 ```
 
-Columsn in order: `index`, `code`, `description`, `freq_count`. The first column is the location index of code, the second column is the name of code, the third column is the description of code, the fourth column is the frequency count of code.
+Columns in order: `index`, `code`, `description`, `freq_count`. The first column is the location index of code, the second column is the name of code, the third column is the description of code, the fourth column is the frequency count of code.
+
+**Note**: All values in columns `index1` and `index2` of `CO_file` should also be covered in column `index` of `freq_file`. Due to size limitation, data examples above are only a small snippet of full data, hence it can **NOT** serve as running examples!
 
 ### Set up Parameters
 
@@ -175,7 +177,7 @@ You can choose a proper dimension and use the corresponding embedding for the ne
 
 From above we know how to get the embedding from co-occurence matrix step by step. Further we'll used the embedding to select related features for our interested PheCodes. Examples below will use **RPDR** data.
 
-First, let's get the embedding from training data. Assume that you have training/testing CO file and freq file named as `CO_train`/`CO_test` and `freq_file_train`/`freq_file_test`.
+First, let's get the embedding from training data. Assume that you have training/testing CO files and freq files named as `CO_train`/`CO_test` and `freq_file_train`/`freq_file_test`.
 
 ```{r eval=FALSE}
 # get embedding & evaluation
