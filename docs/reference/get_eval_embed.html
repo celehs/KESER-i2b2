@@ -53,14 +53,17 @@ It returns a list of summary including meta-data, evaluation and embedding itsel
 <span>  out_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  freq_min <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  normalize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use.dataframe <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save.summary <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>CO_file</dt>
-<dd><p>Co-occurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
+<dd><p>Co-occurrence data file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>. 
+If <code>use.dataframe</code> = <code>TRUE</code>, then it should be a R dataframe variable.
 The data should be a table with 3 columns index1, index2, count:</p><ul><li><p><code>index1</code>: Shows the index of code1.</p></li>
 <li><p><code>index2</code>: Shows the col index of code2.</p></li>
 <li><p><code>count</code>: Shows the counts for certain pair.</p></li>
@@ -69,6 +72,7 @@ The data should be a table with 3 columns index1, index2, count:</p><ul><li><p><
 
 <dt>freq_file</dt>
 <dd><p>Frequency count file with format <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.
+If <code>use.dataframe</code> = <code>TRUE</code>, then it should be a R dataframe variable.
 The data should be a table with 4 columns index, code, description, freq_count:</p><ul><li><p><code>index</code>: Shows the index of code.</p></li>
 <li><p><code>code</code>: Shows the name of code.</p></li>
 <li><p><code>description</code>: Shows the description text of code.</p></li>
@@ -81,7 +85,7 @@ The data should be a table with 4 columns index, code, description, freq_count:<
 
 
 <dt>out_dir</dt>
-<dd><p>Output folder, if <code>NULL</code> then by default set to your_working_directory/output.</p></dd>
+<dd><p>Output folder, if <code>NULL</code> then by default set to your_working_directory/output.s</p></dd>
 
 
 <dt>freq_min</dt>
@@ -95,6 +99,14 @@ out. By default is <code>1000</code>.</p></dd>
 
 <dt>normalize</dt>
 <dd><p><code>TRUE</code> or <code>FALSE</code>, to normalize embedding or not. By default is <code>True</code>.</p></dd>
+
+
+<dt>use.dataframe</dt>
+<dd><p><code>TRUE</code> or <code>FALSE</code>. If <code>TURE</code>, <code>CO_file</code> and <code>freq_file</code> will be accepted as a R data frame variable, other than a file name.</p></dd>
+
+
+<dt>save.summary</dt>
+<dd><p><code>TRUE</code> or <code>FALSE</code>. If <code>FALSE</code>, the function will not save results to location <code>out_dir</code>.</p></dd>
 
 </dl></div>
     <div id="value">

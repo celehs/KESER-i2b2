@@ -11,11 +11,14 @@ get_eval_embed(
   out_dir = NULL,
   freq_min = 1000,
   threshold = 10,
-  normalize = TRUE
+  normalize = TRUE,
+  use.dataframe = FALSE,
+  save.summary = TRUE
 )
 }
 \arguments{
-\item{CO_file}{Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+\item{CO_file}{Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}. 
+If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
 The data should be a table with 3 columns index1, index2, count:
 \itemize{
 \item{\code{index1}}: Shows the index of code1.
@@ -24,6 +27,7 @@ The data should be a table with 3 columns index1, index2, count:
 }}
 
 \item{freq_file}{Frequency count file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
 The data should be a table with 4 columns index, code, description, freq_count:
 \itemize{
 \item{\code{index}}: Shows the index of code.
@@ -34,7 +38,7 @@ The data should be a table with 4 columns index, code, description, freq_count:
 
 \item{dims}{A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.}
 
-\item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.}
+\item{out_dir}{Output folder, if \code{NULL} then by default set to your_working_directory/output.s}
 
 \item{freq_min}{The frequency counts cutoff for code filtering. If the counts are less than \code{freq_min}, it’ll be filtered
 out. By default is \code{1000}.}
@@ -42,6 +46,10 @@ out. By default is \code{1000}.}
 \item{threshold}{Integer number, the threshold to get SPPMI matrix, by default is \code{10}.}
 
 \item{normalize}{\code{TRUE} or \code{FALSE}, to normalize embedding or not. By default is \code{True}.}
+
+\item{use.dataframe}{\code{TRUE} or \code{FALSE}. If \code{TURE}, \code{CO_file} and \code{freq_file} will be accepted as a R data frame variable, other than a file name.}
+
+\item{save.summary}{\code{TRUE} or \code{FALSE}. If \code{FALSE}, the function will not save results to location \code{out_dir}.}
 }
 \value{
 A list of information of meta-data, embedding & evaluation result. It will 

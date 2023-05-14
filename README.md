@@ -41,6 +41,9 @@ Make sure you have the following files available:
 
 **Note:** The format of files can be `.csv`, `.parquet` or `.Rdata`.
 
+**Note:** If `use.dataframe = TRUE` then these two should be passed with
+R dataframes, other than file names.
+
 ### Input File Data Structure Examples
 
 #### Co-occurrence matrix file (`CO_file`):
@@ -290,12 +293,16 @@ residual over lambda.
 cosine value, which indicates the relatedness of codes to the interested
 PheCode.
 
+`regression_summary$selected_features` is the selected features of
+`summary_data` filtered by `beta == 0`
+
 ``` r
 View(regression_summary$summary_data$`PheCode:714.1`)
 print(regression_summary$Nlist$`PheCode:714.1`)
 print(regression_summary$min_lambdas$`PheCode:714.1`)
 print(regression_summary$eval_plots$`PheCode:714.1`)
 print(regression_summary$wordcloud_plots$`PheCode:714.1`)
+View(regression_summary$selected_features$`PheCode:714.1`)
 ```
 
 **Warning:** The evaluation plots of **Test set + AIC** should be **U

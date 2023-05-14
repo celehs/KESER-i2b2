@@ -3,7 +3,8 @@
 #' \code{get_eval_embed} acts as embedding generation & evaluation from co-occurrence data file.
 #' It returns a list of summary including meta-data, evaluation and embedding itself. 
 #' 
-#' @param CO_file Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' @param CO_file Co-occurrence data file with format \code{.csv}, \code{.parquet} or \code{.Rdata}. 
+#' If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
 #' The data should be a table with 3 columns index1, index2, count:
 #' \itemize{
 #' \item{\code{index1}}: Shows the index of code1.
@@ -11,6 +12,7 @@
 #' \item{\code{count}}: Shows the counts for certain pair.
 #' }
 #' @param freq_file Frequency count file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
+#' If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
 #' The data should be a table with 4 columns index, code, description, freq_count:
 #' \itemize{
 #' \item{\code{index}}: Shows the index of code.
@@ -19,11 +21,13 @@
 #' \item{\code{freq_count}}: Shows the frequency count of code.
 #' }
 #' @param dims A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.
-#' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.
+#' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.s
 #' @param freq_min The frequency counts cutoff for code filtering. If the counts are less than \code{freq_min}, it’ll be filtered
 #' out. By default is \code{1000}.
 #' @param threshold Integer number, the threshold to get SPPMI matrix, by default is \code{10}.
 #' @param normalize \code{TRUE} or \code{FALSE}, to normalize embedding or not. By default is \code{True}.
+#' @param use.dataframe \code{TRUE} or \code{FALSE}. If \code{TURE}, \code{CO_file} and \code{freq_file} will be accepted as a R data frame variable, other than a file name.
+#' @param save.summary \code{TRUE} or \code{FALSE}. If \code{FALSE}, the function will not save results to location \code{out_dir}.
 #' @return A list of information of meta-data, embedding & evaluation result. It will 
 #' be saved in \code{out_dir} as \code{.Rdata} file. 
 #' 
@@ -34,7 +38,9 @@ get_eval_embed <- function(CO_file,
                            out_dir = NULL,
                            freq_min = 1000,
                            threshold = 10,
-                           normalize = TRUE) {
+                           normalize = TRUE,
+                           use.dataframe = FALSE,
+                           save.summary = TRUE) {
       
   
   # Get Summary
@@ -47,8 +53,14 @@ get_eval_embed <- function(CO_file,
   
   # Load Data
   cat("\nLoading data...")
-  CO_idx <- read_file(path_chk(CO_file))
-  freq <- read_file(path_chk(freq_file))
+  if (use.dataframe) {
+    CO_idx <- CO_file
+    freq <- freq_file
+  } else {
+    CO_idx <- read_file(path_chk(CO_file))
+    freq <- read_file(path_chk(freq_file))
+  }
+  
   
   # Check Input Files
   if (any(colnames(CO_idx) != c("index1", "index2", "count"))) {
@@ -167,7 +179,7 @@ get_eval_embed <- function(CO_file,
                                  "out_dir" = out_dir,
                                  "summary_file" = summary_file),
                   "summary" = summary)
-  save(summary, file = file.path(out_dir, summary_file))
+  if(save.summary) {save(summary, file = file.path(out_dir, summary_file))}
   return(summary)
   ################################################################################
 }

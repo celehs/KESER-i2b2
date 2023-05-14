@@ -43,6 +43,7 @@ A list of information including:
 \item{\code{min_lambdas}}: The best lambda of mininmun AIC + Testing Residual for interested Phecodes.
 \item{\code{eval_plots}}: Plots of Residuals over log(lambda) for interested Phecodes. 
 \item{\code{wordcloud_plots}}: Word cloud plots for selected features magnified by cosine values. 
+\item{\code{selected_features}}: Selected features, it filters out features in \code{summary_data} where beta equals 0.
 }
 }
 \description{

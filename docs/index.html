@@ -71,11 +71,11 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"celehs/KESER-i2b2"</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">KESER.i2b2</span><span class="op">)</span></span></code></pre></div>
-<p>If you can’t install it, alternative option is to download the repo and use <code><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">devtools::load_all()</a></code> to load the package.</p>
+<p>If you can’t install it, alternative option is to download the repo and use <code><a href="https://rdrr.io/pkg/devtools/man/load_all.html" class="external-link">devtools::load_all()</a></code> to load the package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"D:\\Projects\\harvard\\keser-i2b2"</span><span class="op">)</span>     <span class="co"># Set to your path</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span>    </span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span>    </span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -90,6 +90,7 @@
 <li><p><code>freq_file</code>: Frequency Count file.</p></li>
 </ul>
 <p><strong>Note:</strong> The format of files can be <code>.csv</code>, <code>.parquet</code> or <code>.Rdata</code>.</p>
+<p><strong>Note:</strong> If <code>use.dataframe = TRUE</code> then these two should be passed with R dataframes, other than file names.</p>
 <div class="section level3">
 <h3 id="input-file-data-structure-examples">Input File Data Structure Examples<a class="anchor" aria-label="anchor" href="#input-file-data-structure-examples"></a>
 </h3>
@@ -257,12 +258,14 @@
 <p><code>regression_summary$min_lambdas</code> is the lambda selected for minimum AIC + testing residuals.</p>
 <p><code>regression_summary$eval_plots</code> is the evaluation plots of testing residual over lambda.</p>
 <p><code>regression_summary$wordcloud_plots</code> is the word cloud plot magnified by cosine value, which indicates the relatedness of codes to the interested PheCode.</p>
+<p><code>regression_summary$selected_features</code> is the selected features of <code>summary_data</code> filtered by <code>beta == 0</code></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">summary_data</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">Nlist</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">min_lambdas</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">eval_plots</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">wordcloud_plots</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">wordcloud_plots</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="va">regression_summary</span><span class="op">$</span><span class="va">selected_features</span><span class="op">$</span><span class="va">`PheCode:714.1`</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Warning:</strong> The evaluation plots of <strong>Test set + AIC</strong> should be <strong>U Curve</strong>. Otherwise it’s not correct. If the U Curve does not occur, tune the <code>lambda_vec</code> and <code>alpha</code> to and repeat the step 2 again. Given that the <strong>lambda_vec</strong> is highly data specific, it’s very likely that you need to tune it by yourself.</p>
 <p>Example of Valid Evaluation (U Shape) :</p>
 <p><img src="reference/figures/valid_regression.png"> </p>

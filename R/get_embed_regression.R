@@ -22,6 +22,7 @@
 #' \item{\code{min_lambdas}}: The best lambda of mininmun AIC + Testing Residual for interested Phecodes.
 #' \item{\code{eval_plots}}: Plots of Residuals over log(lambda) for interested Phecodes. 
 #' \item{\code{wordcloud_plots}}: Word cloud plots for selected features magnified by cosine values. 
+#' \item{\code{selected_features}}: Selected features, it filters out features in \code{summary_data} where beta equals 0.
 #' }
 #' 
 #' @export
@@ -167,8 +168,24 @@ get_embed_regression <- function(embed_train, embed_valid, phecodes, dim,
   })
   names(wordcloud_plots) <- phecodes
   
+  # step 6 - get summary for selected features (newly required)
+  selected_features <- lapply(summary_data , function(phecode) {
+    phecode %>% dplyr::filter(beta != 0)
+  })
+  
+  cat("\n----------Feature Selection Summary----------\n")
+  for (phecode in phecodes) {
+    cat(paste(phecode, ":", OurDict %>% dplyr::filter(code == phecode) %>% dplyr::select(desc)), "\n")
+    type_ct <- selected_features[[phecode]] %>% dplyr::mutate(code_type = sub(":.*", "", codes)) %>% 
+      dplyr::select(code_type) %>% dplyr::group_by(code_type) %>% dplyr::count()
+    for (i in seq(nrow(type_ct))) {
+      cat(paste0("# of '", type_ct[["code_type"]][i], "' features selected: ", type_ct[["n"]][i], "\n"))
+    }
+    cat("# of features selected in total: ", sum(type_ct[["n"]]), "\n\n")
+  }
+  
   return(list(summary_data = summary_data, Nlist = Nlist, min_lambdas = min_lambdas, 
-              eval_plots = eval_plots, wordcloud_plots = wordcloud_plots))
+              eval_plots = eval_plots, wordcloud_plots = wordcloud_plots, selected_features = selected_features))
 }
 
 

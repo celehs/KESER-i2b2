@@ -739,9 +739,9 @@ chk_CO <- function(CO) {
     cat(paste0("\n# of ", code, ": ", length(valid_codes[[code]])))
     invalid_codes <- setdiff(invalid_codes, valid_codes[[code]])
   }
-  cat(paste0("\n# of invalid codes: ", length(invalid_codes), "\n"))
+  cat(paste0("\n# of additional codes: ", length(invalid_codes), "\n"))
   if (length(invalid_codes) != 0) {
-    cat(paste0("\nInvalid codes: "))
+    cat(paste0("\nAdditional codes: "))
     cat(invalid_codes)
     cat("\n\n")
   }
