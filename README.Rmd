@@ -236,7 +236,7 @@ Then, you can access the results in `regression_summary`.
 
 `regression_summary$wordcloud_plots` is the word cloud plot magnified by cosine value, which indicates the relatedness of codes to the interested PheCode.
 
-`regression_summary$selected_features` is the selected features of `summary_data` filtered by `beta == 0`
+`regression_summary$selected_features` is the selected features of `summary_data` filtered by `beta != 0`
 
 
 ```{r eval=FALSE}

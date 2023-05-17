@@ -294,7 +294,7 @@ cosine value, which indicates the relatedness of codes to the interested
 PheCode.
 
 `regression_summary$selected_features` is the selected features of
-`summary_data` filtered by `beta == 0`
+`summary_data` filtered by `beta != 0`
 
 ``` r
 View(regression_summary$summary_data$`PheCode:714.1`)
