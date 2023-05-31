@@ -725,7 +725,7 @@ path_chk <- function(path) {
 chk_CO <- function(CO) {
   # cat("\n\n- Codes ending with '-PCS' will be cleared as: 'Code-PCS' to 'Code'\n")
   # CO <- CO %>% dplyr::mutate(dplyr::across(c("V1", "V2"), stringr::str_replace, "-PCS", ""))
-  cat("- Valid codes: ",  paste0(VALID_CODES, collapse=", "), "\n")
+  cat("\n- Valid codes: ",  paste0(VALID_CODES, collapse=", "), "\n")
   cat("- Examples: LOINC:15429, RXNORM:248656, PheCode:426.92, CCS:143\n")
   CO_Unique_codes <- get_unique_codes(CO)
   valid_codes <- lapply(VALID_CODES, function(x) {
@@ -746,5 +746,16 @@ chk_CO <- function(CO) {
     cat("\n\n")
   }
   return(CO)
+}
+
+#' Function to concatentae text with string
+#' @keywords internal
+concat_txt <- function(vec1, vec2, concat = "->") {
+  if (length(vec1) != length(vec2)) stop("Length not match.")
+  txt_vec <- c()
+  for (i in seq_along(vec1)) {
+    txt_vec <- append(txt_vec, paste0(vec1[i], " ", concat, " ", vec2[i]))
+  }
+  return(paste0(txt_vec, collapse = ", "))
 }
 #########################################################################

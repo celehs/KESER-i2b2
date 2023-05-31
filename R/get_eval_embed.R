@@ -11,6 +11,7 @@
 #' \item{\code{index2}}: Shows the col index of code2.
 #' \item{\code{count}}: Shows the counts for certain pair.
 #' }
+#' If the columns are not \code{index1}, \code{index2} and \code{count}, it will consider the first 3 columns as the corresponding columns.
 #' @param freq_file Frequency count file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 #' If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
 #' The data should be a table with 4 columns index, code, description, freq_count:
@@ -20,6 +21,7 @@
 #' \item{\code{description}}: Shows the description text of code.
 #' \item{\code{freq_count}}: Shows the frequency count of code.
 #' }
+#' If the columns are not \code{index1}, \code{code}, \code{description} and \code{freq_count}, it will consider the first 4 columns as the corresponding columns.
 #' @param dims A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.
 #' @param out_dir Output folder, if \code{NULL} then by default set to your_working_directory/output.s
 #' @param freq_min The frequency counts cutoff for code filtering. If the counts are less than \code{freq_min}, it’ll be filtered
@@ -62,13 +64,31 @@ get_eval_embed <- function(CO_file,
   }
   
   
+  # # Check Input Files
+  # if (any(colnames(CO_idx) != c("index1", "index2", "count"))) {
+  #   stop("Invalid Column names for CO_file, should be: index1, index2, count")
+  # }
+  # if (any(colnames(freq) != c("index", "code", "description", "freq_count"))) {
+  #   stop("Invalid Column names for freq, should be: index1, code, description, freq_count")
+  # }
+  
   # Check Input Files
-  if (any(colnames(CO_idx) != c("index1", "index2", "count"))) {
-    stop("Invalid Column names for CO_file, should be: index1, index2, count")
+  cols_CO_idx_default <- c("index1", "index2", "count")
+  cols_freq_default <- c("index", "code", "description", "freq_count")
+  cols_CO_idx <- colnames(CO_idx)
+  cols_freq <- colnames(freq)
+  cat(paste0("\nColumn names for CO_file are: ", paste0(cols_CO_idx, collapse = ", ")))
+  if (any(colnames(CO_idx) != cols_CO_idx_default)) {
+    colnames(CO_idx) <- cols_CO_idx_default
+    warning(paste0("\nProgram considers the columns of CO_file as: ", concat_txt(cols_CO_idx, cols_CO_idx_default)))
   }
-  if (any(colnames(freq) != c("index", "code", "description", "freq_count"))) {
-    stop("Invalid Column names for CO_file, should be: index1, code, description, freq_count")
+  cat(paste0("\nColumn names for freq_file are: ", paste0(cols_freq, collapse = ", ")))
+  if (any(colnames(freq) != cols_freq_default)) {
+    colnames(freq) <- cols_freq_default
+    warning(paste0("\nProgram considers the columns of freq_file as: ", concat_txt(cols_freq, cols_freq_default)))
   }
+  cat("\n")
+
   
   # Map CO from index to codes
   cat("\nMapping CO codes...")

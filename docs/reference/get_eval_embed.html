@@ -67,7 +67,7 @@ If <code>use.dataframe</code> = <code>TRUE</code>, then it should be a R datafra
 The data should be a table with 3 columns index1, index2, count:</p><ul><li><p><code>index1</code>: Shows the index of code1.</p></li>
 <li><p><code>index2</code>: Shows the col index of code2.</p></li>
 <li><p><code>count</code>: Shows the counts for certain pair.</p></li>
-</ul></dd>
+</ul><p>If the columns are not <code>index1</code>, <code>index2</code> and <code>count</code>, it will consider the first 3 columns as the corresponding columns.</p></dd>
 
 
 <dt>freq_file</dt>
@@ -77,7 +77,7 @@ The data should be a table with 4 columns index, code, description, freq_count:<
 <li><p><code>code</code>: Shows the name of code.</p></li>
 <li><p><code>description</code>: Shows the description text of code.</p></li>
 <li><p><code>freq_count</code>: Shows the frequency count of code.</p></li>
-</ul></dd>
+</ul><p>If the columns are not <code>index1</code>, <code>code</code>, <code>description</code> and <code>freq_count</code>, it will consider the first 4 columns as the corresponding columns.</p></dd>
 
 
 <dt>dims</dt>

@@ -24,7 +24,8 @@ The data should be a table with 3 columns index1, index2, count:
 \item{\code{index1}}: Shows the index of code1.
 \item{\code{index2}}: Shows the col index of code2.
 \item{\code{count}}: Shows the counts for certain pair.
-}}
+}
+If the columns are not \code{index1}, \code{index2} and \code{count}, it will consider the first 3 columns as the corresponding columns.}
 
 \item{freq_file}{Frequency count file with format \code{.csv}, \code{.parquet} or \code{.Rdata}.
 If \code{use.dataframe} = \code{TRUE}, then it should be a R dataframe variable.
@@ -34,7 +35,8 @@ The data should be a table with 4 columns index, code, description, freq_count:
 \item{\code{code}}: Shows the name of code.
 \item{\code{description}}: Shows the description text of code.
 \item{\code{freq_count}}: Shows the frequency count of code.
-}}
+}
+If the columns are not \code{index1}, \code{code}, \code{description} and \code{freq_count}, it will consider the first 4 columns as the corresponding columns.}
 
 \item{dims}{A vector of numeric values for dimension, by default is \code{seq(100, 1000, 100)}.}
 
